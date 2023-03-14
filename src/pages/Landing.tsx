@@ -1,26 +1,18 @@
 import React from "react";
 import main from "../assets/images/main.svg";
 import Logo from "../components/Logo";
-import { joinStyles } from "../utils/styleUtils";
-import styles from "./Landing.module.css";
+import { Link } from "react-router-dom";
+import Wrapper from "../assets/wrappers/LandingPage";
 
 type Props = {};
 
-const Landing: React.FC<Props> = (props) => {
+const Landing: React.FC<Props> = () => {
   return (
-    <main>
+    <Wrapper>
       <nav>
         <Logo />
       </nav>
-      <div
-        className={joinStyles(
-          {
-            source: styles,
-            styles: ["page"],
-          },
-          "container"
-        )}
-      >
+      <div className="page container">
         {/* 'page' is a class inside styled component */}
         <div className="info">
           <h1>
@@ -32,21 +24,13 @@ const Landing: React.FC<Props> = (props) => {
             consequuntur, optio officiis possimus ratione repellendus provident!
             Magni ex cum, praesentium nemo minus aut voluptate.
           </p>
-          <button className="btn btn-hero">Login/Register</button>
+          <Link to="/register" className="btn btn-hero">
+            Login/Register
+          </Link>
         </div>
-        <img
-          src={main}
-          alt="main"
-          className={joinStyles(
-            {
-              source: styles,
-              styles: ["main-img"],
-            },
-            "img"
-          )}
-        />
+        <img src={main} alt="main landing" className="img main-img" />
       </div>
-    </main>
+    </Wrapper>
   );
 };
 

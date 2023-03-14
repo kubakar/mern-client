@@ -1,10 +1,10 @@
 export const joinStyles = (
-  local: { source: object; styles: string[] },
+  local: { styles: object; classes: string[] },
   global: string = ""
 ): string => {
-  const { source, styles } = local;
-  const localsJoined = styles
-    .map((l) => source[l as keyof typeof source])
+  const { styles, classes } = local;
+  const localsJoined = classes
+    .map((l) => styles[l as keyof typeof styles])
     .join(" ");
 
   return `${global} ${localsJoined}`.trim();
