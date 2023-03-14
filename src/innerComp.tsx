@@ -1,9 +1,9 @@
 import React from "react";
 
-interface CompProps {
+type CompProps = {
   name: string;
   surname?: string;
-}
+};
 
 const Comp: React.FC<CompProps> = (props) => {
   const { name, surname } = props;
