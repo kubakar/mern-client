@@ -21,6 +21,7 @@ const FormRow: React.FC<Props> = (props) => {
         type={type}
         value={value}
         name={name}
+        minLength={5} // standard client side validation
         className="form-input"
         onChange={handleChange}
       />

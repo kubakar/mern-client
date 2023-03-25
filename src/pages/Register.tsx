@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Alert from "../components/Alert";
 import FormRow from "../components/FormRow";
 import Logo from "../components/Logo";
+import { useAppContext } from "../context/appContext";
 
 const Wrapper = styled.section`
   display: flex;
@@ -20,9 +21,7 @@ const Wrapper = styled.section`
   .btn {
     margin-top: 1rem;
   }
-  h3 {
-    text-align: center;
-  }
+  h3,
   p {
     text-align: center;
   }
@@ -34,43 +33,46 @@ type formType = {
   name: string;
   email: string;
   password: string;
-  isMember: boolean;
 };
 
 const initialState: formType = {
   name: "",
   email: "",
   password: "",
-  isMember: true,
 };
 
 const Register: React.FC<Props> = (props) => {
   const [formValues, setFormValues] = useState<formType>(initialState);
+  const [isMember, setIsMember] = useState<boolean>(true);
+
   // global state and useNavigate
+  const { isLoading, showAlert, displayAlert } = useAppContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.name);
-    console.log(e.target.value);
-
     const { name, value } = e.target;
 
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleMember = () => {
-    setFormValues((prev) => ({
-      ...prev,
-      isMember: !prev.isMember,
-    }));
+  const toggleMember = () => setIsMember((prev) => !prev);
+
+  const validateInput = (data: formType, isMember: boolean): boolean => {
+    const { name, email, password } = data;
+
+    if (!(email && password && (name || isMember))) {
+      return false;
+    }
+    return true;
   };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formValues);
 
-    setFormValues(initialState);
+    if (!validateInput(formValues, isMember)) return displayAlert();
 
-    console.log(`${formValues.isMember ? "is Member" : "Not a member"}`);
+    setFormValues(initialState);
+    console.log(`${isMember ? "is Member" : "Not a member"}`);
   };
 
   const getActionName = (isMember: boolean) =>
@@ -80,21 +82,24 @@ const Register: React.FC<Props> = (props) => {
     <Wrapper className="full-page">
       <form onSubmit={onSubmit} action="" className="form">
         <Logo />
-        <h3>{getActionName(formValues.isMember)}</h3>
-        {formValues.isMember && <Alert />}
+        <h3>{getActionName(isMember)}</h3>
+        {showAlert && <Alert />}
+        {/* showAlert is data from global ctx */}
         {[
           // render first input conditionally
-          ...(!formValues.isMember ? [{ name: "name", type: "text" }] : []),
+          ...(!isMember ? [{ name: "name", type: "text" }] : []),
           { name: "email", type: "email" },
           { name: "password", type: "password" },
         ].map(({ name, type }) => {
           return (
             <FormRow
+              key={`key-${name}`}
               name={name}
               type={type}
               // omit prop from obj type
               // https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys
-              value={formValues[name as keyof Omit<formType, "isMember">]}
+              // value={formValues[name as keyof Omit<formType, "isMember">]} (previous solution)
+              value={formValues[name as keyof formType]}
               handleChange={handleChange}
             />
           );
@@ -103,9 +108,9 @@ const Register: React.FC<Props> = (props) => {
           Submit
         </button>
         <p>
-          {formValues.isMember ? "Not a member yet?" : "Already a member?"}
+          {isMember ? "Not a member yet?" : "Already a member?"}
           <button type="button" onClick={toggleMember} className="btn-link">
-            {getActionName(!formValues.isMember)}
+            {getActionName(!isMember)}
           </button>
         </p>
       </form>
