@@ -49,7 +49,6 @@ html {
   --headingFont: "Roboto Condensed", Sans-Serif;
   --bodyFont: "Cabin", Sans-Serif;
   --small-text: 0.875rem;
-  --extra-small-text: 0.7em;
   /* rest of the vars */
   --backgroundColor: var(--grey-50);
   --textColor: var(--grey-900);
@@ -81,7 +80,7 @@ body {
 
 p {
   margin-bottom: 1.5rem;
-  max-width: 40em;
+  /* max-width: 40em; */
 }
 
 h1,
@@ -102,7 +101,6 @@ h1 {
   margin-top: 0;
   font-size: 3.052rem;
 }
-
 h2 {
   font-size: 2.441rem;
 }
@@ -128,10 +126,10 @@ a {
   text-decoration: none;
   letter-spacing: var(--letterSpacing);
 }
-a,
+/* a,
 button {
   line-height: 1.15;
-}
+} */
 button:disabled {
   cursor: not-allowed;
 }
@@ -139,71 +137,42 @@ ul {
   list-style-type: none;
   padding: 0;
 }
-
 .img {
   width: 100%;
   display: block;
   object-fit: cover;
 }
-/* buttons */
 
+/* buttons */
 .btn {
+  border: transparent;
+  text-transform: capitalize;
   cursor: pointer;
+  padding: 0.375rem 0.75rem;
   color: var(--white);
   background: var(--primary-500);
-  border: transparent;
   border-radius: var(--borderRadius);
   letter-spacing: var(--letterSpacing);
-  padding: 0.375rem 0.75rem;
   box-shadow: var(--shadow-2);
   transition: var(--transition);
-  text-transform: capitalize;
-  display: inline-block;
+  /* display: inline-block; */
 }
 .btn:hover {
   background: var(--primary-700);
   box-shadow: var(--shadow-3);
 }
-.btn-hipster {
-  color: var(--primary-500);
-  background: var(--primary-200);
-}
-.btn-hipster:hover {
-  color: var(--primary-200);
-  background: var(--primary-700);
-}
 .btn-block {
   width: 100%;
-}
-.btn-hero {
-  font-size: 1.25rem;
-  padding: 0.5rem 1.25rem;
-}
-.btn-danger {
-  background: var(--red-light);
-  color: var(--red-dark);
-}
-.btn-danger:hover {
-  background: var(--red-dark);
-  color: var(--white);
 }
 .btn-link {
   background: transparent;
   border: transparent;
-  color: var(--primary-500);
   cursor: pointer;
-  letter-spacing: var(--letterSpacing);
-}
-/* alerts */
-.alert {
-  padding: 0.375rem 0.75rem;
-  margin-bottom: 1rem;
-  border-color: transparent;
-  border-radius: var(--borderRadius);
-  text-align: center;
+  color: var(--primary-500);
   letter-spacing: var(--letterSpacing);
 }
 
+/* status colors */
 .alert-danger {
   color: var(--red-dark);
   background: var(--red-light);
@@ -212,16 +181,25 @@ ul {
   color: var(--green-dark);
   background: var(--green-light);
 }
-/* form */
+/* .btn-danger {
+  background: var(--red-light);
+  color: var(--red-dark);
+}
+.btn-danger:hover {
+  background: var(--red-dark);
+  color: var(--white);
+} */
 
+/* form */
 .form {
-  width: 90vw;
+  width: var(--fluid-width);
   max-width: var(--fixed-width);
   background: var(--white);
   border-radius: var(--borderRadius);
   box-shadow: var(--shadow-2);
-  padding: 2rem 2.5rem;
-  margin: 3rem auto;
+  padding: 2rem;
+  /* margin: 3rem auto; */
+  /* monitor this... */
   transition: var(--transition);
 }
 .form:hover {
@@ -255,16 +233,6 @@ ul {
 .form-textarea {
   height: 7rem;
 }
-::placeholder {
-  font-family: inherit;
-  color: var(--grey-400);
-}
-.form-alert {
-  color: var(--red-dark);
-  letter-spacing: var(--letterSpacing);
-  text-transform: capitalize;
-}
-/* alert */
 
 @keyframes spinner {
   to {
@@ -283,19 +251,6 @@ ul {
 .loading-center {
   margin: 0 auto;
 }
-/* title */
-
-.title {
-  text-align: center;
-}
-
-.title-underline {
-  background: var(--primary-500);
-  width: 7rem;
-  height: 0.25rem;
-  margin: 0 auto;
-  margin-top: -1rem;
-}
 
 .container {
   width: var(--fluid-width);
@@ -306,7 +261,38 @@ ul {
   min-height: 100vh;
 }
 
-.coffee-info {
+/* NOT NEEDED */
+
+/* .title {
+  text-align: center;
+}
+
+.title-underline {
+  background: var(--primary-500);
+  width: 7rem;
+  height: 0.25rem;
+  margin: 0 auto;
+  margin-top: -1rem;
+} */
+
+/* =================================== */
+
+/* .form-alert {
+  color: var(--red-dark);
+  letter-spacing: var(--letterSpacing);
+  text-transform: capitalize;
+} */
+
+/* =================================== */
+
+/* ::placeholder {
+  font-family: inherit;
+  color: var(--grey-400);
+} */
+
+/* =================================== */
+
+/* .coffee-info {
   text-align: center;
   text-transform: capitalize;
   margin-bottom: 1rem;
@@ -327,4 +313,4 @@ ul {
     display: inline-block;
     margin-right: 0.5rem;
   }
-}
+} */

@@ -7,36 +7,53 @@ const initialState: State = {
   showAlert: false,
   alertText: "",
   alertType: "",
-  displayAlert: () => {},
+  user: null,
+  token: null,
+  userLocation: "",
 };
 
-const AppContext = createContext<State | undefined>(undefined);
+type StateMethods = {
+  displayAlert: () => void;
+  clearAlert: () => void;
+  // https://www.typescriptlang.org/docs/handbook/utility-types.html
+  registerUser: (user: Record<string, string>) => void;
+};
+
+const AppContext = createContext<(State & StateMethods) | undefined>(undefined);
 
 type AppProviderProps = {
   children: React.ReactNode;
 };
 
 export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
-  // const [data, setData] = useState<AppContextType>(initialState);
-
   // reducer
   const [state, disptach] = useReducer(reducer, initialState);
 
-  // dispatch methods
-  const displayAlert: VoidFunction = () => {
-    disptach({ type: ActionKind.ShowAlert });
-
-    clearAlert(); // clear automatically after delay
-  };
-
-  const clearAlert: VoidFunction = () => {
+  const ctxClearAlert = () => {
     setTimeout(() => {
       disptach({ type: ActionKind.ClearAlert });
     }, 2000);
   };
 
+  const stateMethods: StateMethods = {
+    clearAlert() {
+      setTimeout(() => {
+        disptach({ type: ActionKind.ClearAlert });
+      }, 2000);
+    },
+
+    displayAlert() {
+      disptach({ type: ActionKind.ShowAlert });
+      ctxClearAlert();
+    },
+
+    async registerUser(user) {
+      console.log(user);
+    },
+  };
+
   return (
-    <AppContext.Provider value={{ ...state, displayAlert }}>
+    <AppContext.Provider value={{ ...state, ...stateMethods }}>
       {props.children}
     </AppContext.Provider>
   );

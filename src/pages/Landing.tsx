@@ -34,6 +34,11 @@ const Wrapper = styled.main`
     display: none;
   }
 
+  .btn-hero {
+    font-size: 1.25rem;
+    padding: 0.5rem 1.25rem;
+  }
+
   @media (min-width: 992px) {
     .page {
       grid-template-columns: 1fr 1fr;

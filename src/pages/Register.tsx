@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Alert from "../components/Alert";
 import FormRow from "../components/FormRow";
 import Logo from "../components/Logo";
 import { useAppContext } from "../context/appContext";
@@ -8,8 +7,8 @@ import { useAppContext } from "../context/appContext";
 const Wrapper = styled.section`
   display: flex;
   align-items: center;
-  /* justify-content: center;
-  override => margin: 3rem auto; @ .form */
+  justify-content: center;
+  /* override => margin: 3rem auto; @ .form */
   .logo {
     display: block;
     margin: 0 auto;
@@ -46,7 +45,7 @@ const Register: React.FC<Props> = (props) => {
   const [isMember, setIsMember] = useState<boolean>(true);
 
   // global state and useNavigate
-  const { isLoading, showAlert, displayAlert } = useAppContext();
+  const { isLoading, displayAlert, registerUser } = useAppContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -73,6 +72,10 @@ const Register: React.FC<Props> = (props) => {
 
     setFormValues(initialState);
     console.log(`${isMember ? "is Member" : "Not a member"}`);
+
+    if (isMember) {
+      console.log("already a member");
+    } else registerUser(formValues);
   };
 
   const getActionName = (isMember: boolean) =>
@@ -83,7 +86,7 @@ const Register: React.FC<Props> = (props) => {
       <form onSubmit={onSubmit} action="" className="form">
         <Logo />
         <h3>{getActionName(isMember)}</h3>
-        {showAlert && <Alert />}
+        {/* {showAlert && <Alert />} */}
         {/* showAlert is data from global ctx */}
         {[
           // render first input conditionally
@@ -104,7 +107,7 @@ const Register: React.FC<Props> = (props) => {
             />
           );
         })}
-        <button type="submit" className="btn btn-block">
+        <button type="submit" className="btn btn-block" disabled={isLoading}>
           Submit
         </button>
         <p>

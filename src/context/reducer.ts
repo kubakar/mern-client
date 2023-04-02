@@ -1,12 +1,13 @@
 // import React from "react";
 
-// AppContextType
 export type State = {
   isLoading: false;
   showAlert: boolean;
   alertText: string;
   alertType: string;
-  displayAlert: () => void;
+  user: string | null;
+  token: string | null;
+  userLocation: string;
 };
 
 // const initialCounterState: State = {
@@ -17,6 +18,9 @@ export enum ActionKind {
   ShowAlert,
   ClearAlert,
   // ShowAlert = "SHOW_ALERT",
+  RegisterUserBegin,
+  RegisterUserSuccess,
+  RegisterUserError,
 }
 
 type Action = {
@@ -43,6 +47,9 @@ const reducer = (state: State, action: Action): State => {
         alertText: "",
         alertType: "",
       };
+
+    case ActionKind.RegisterUserBegin:
+      return state;
 
     default:
       throw new Error(`no such action : ${action.type}`);

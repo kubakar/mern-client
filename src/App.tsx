@@ -5,16 +5,25 @@ import Register from "./pages/Register";
 import Landing from "./pages/Landing";
 import Error from "./pages/Error";
 import Dashboad from "./pages/Dashboad";
+import { useAppContext } from "./context/appContext";
+import AlertGlobal from "./components/AlertGlobal";
 
-const App: React.FC<{}> = (props) => (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Dashboad />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/landing" element={<Landing />} />
-      <Route path="*" element={<Error />} />
-    </Routes>
-  </BrowserRouter>
-);
+const App: React.FC<{}> = (props) => {
+  const { showAlert } = useAppContext();
+
+  return (
+    <React.Fragment>
+      {showAlert && <AlertGlobal />}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboad />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/landing" element={<Landing />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </BrowserRouter>
+    </React.Fragment>
+  );
+};
 
 export default App;
