@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import styled from "styled-components";
 import FormRow from "../components/FormRow";
 import Logo from "../components/Logo";
 import { useAppContext } from "../context/appContext";
+import { useApi } from "../utils/hooks";
+import Loading from "../components/Loading";
+import { UserResponse } from "../context/appContext";
 
 const Wrapper = styled.section`
   display: flex;
@@ -40,13 +46,58 @@ const initialState: formType = {
   password: "",
 };
 
-const Register: React.FC<Props> = (props) => {
+const Register: React.FC<Props> = () => {
   const [formValues, setFormValues] = useState<formType>(initialState);
   const [isMember, setIsMember] = useState<boolean>(true);
 
   // global state and useNavigate
-  const { isLoading, displayAlert, registerUser } = useAppContext();
+  const navigate = useNavigate();
+  const { user, displayAlert, loginUser } = useAppContext();
 
+  // const registerApi = async (currentUser: formType) =>
+  //   axios.post("/api/auth/register", currentUser);
+  // // axios.get("/api/auth/getUsers");
+
+  const setupUser = async (currentUser: formType, login: boolean) => {
+    const path = login ? "login" : "register";
+    return axios.post(`/api/auth/${path}`, currentUser);
+  };
+
+  const [apiData, apiError, apiLoading, apiCall] = useApi<UserResponse>(
+    setupUser, // setup call with GENERIC also?
+    true
+  );
+
+  // useEffect(() => {
+  //   showLoading(apiLoading);
+  // }, [apiLoading]);
+
+  useEffect(() => {
+    if (apiData) {
+      if (apiData.token) {
+        console.log("TOKEN !!");
+        displayAlert("User Logged In! Redirecting...", "success");
+        loginUser(apiData); // proceed with global state changed (token received)
+      } else {
+        console.log("NO ... TOKEN !!");
+        displayAlert("User Created!", "success");
+        setIsMember(true); // go to 'Login' form
+      }
+    }
+    if (apiError) displayAlert(apiError.data.msg);
+  }, [apiData, apiError]);
+  // display & showLoading => useCallback?
+
+  // redirect to other page if user is seeded to context ()
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  }, [user, navigate]);
+
+  // other methods
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -55,10 +106,10 @@ const Register: React.FC<Props> = (props) => {
 
   const toggleMember = () => setIsMember((prev) => !prev);
 
-  const validateInput = (data: formType, isMember: boolean): boolean => {
+  const validateInput = (data: formType, login: boolean): boolean => {
     const { name, email, password } = data;
 
-    if (!(email && password && (name || isMember))) {
+    if (!(email && password && (name || login))) {
       return false;
     }
     return true;
@@ -66,28 +117,29 @@ const Register: React.FC<Props> = (props) => {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formValues);
-
-    if (!validateInput(formValues, isMember)) return displayAlert();
+    if (!validateInput(formValues, isMember))
+      return displayAlert("Please provide all values");
 
     setFormValues(initialState);
-    console.log(`${isMember ? "is Member" : "Not a member"}`);
-
-    if (isMember) {
-      console.log("already a member");
-    } else registerUser(formValues);
+    apiCall(formValues, isMember); // login / register is handled above
   };
 
-  const getActionName = (isMember: boolean) =>
-    isMember ? "Login" : "Register";
+  const getActionNames = (login: boolean) =>
+    login ? ["Login", "Not a member yet?"] : ["Register", "Already a member?"];
 
   return (
     <Wrapper className="full-page">
-      <form onSubmit={onSubmit} action="" className="form">
+      {apiLoading && <Loading />}
+
+      <form
+        onSubmit={onSubmit}
+        action=""
+        className="form"
+        // style={{ position: "relative" }} OVERLAY TEST
+      >
+        {/* <div>A</div> */}
         <Logo />
-        <h3>{getActionName(isMember)}</h3>
-        {/* {showAlert && <Alert />} */}
-        {/* showAlert is data from global ctx */}
+        <h3>{getActionNames(isMember)[0]}</h3>
         {[
           // render first input conditionally
           ...(!isMember ? [{ name: "name", type: "text" }] : []),
@@ -107,13 +159,13 @@ const Register: React.FC<Props> = (props) => {
             />
           );
         })}
-        <button type="submit" className="btn btn-block" disabled={isLoading}>
+        <button type="submit" className="btn btn-block" disabled={apiLoading}>
           Submit
         </button>
         <p>
-          {isMember ? "Not a member yet?" : "Already a member?"}
+          {getActionNames(isMember)[1]}
           <button type="button" onClick={toggleMember} className="btn-link">
-            {getActionName(!isMember)}
+            {getActionNames(!isMember)[0]}
           </button>
         </p>
       </form>

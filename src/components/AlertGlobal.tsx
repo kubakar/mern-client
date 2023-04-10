@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   letter-spacing: var(--letterSpacing);
 
   /* global center alert */
-  position: absolute;
+  position: fixed;
   left: 50%;
   transform: translate(-50%, 0);
   width: 90vw;
@@ -25,7 +25,6 @@ type Props = {};
 const AlertGlobal: React.FC<Props> = () => {
   const { alertText, alertType } = useAppContext();
 
-  // return <div className={`alert alert-${alertType}`}>{alertText}</div>;
-  return <Wrapper className={`alert alert-danger`}>ALARM</Wrapper>;
+  return <Wrapper className={`alert alert-${alertType}`}>{alertText}</Wrapper>;
 };
 export default AlertGlobal;

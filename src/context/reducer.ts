@@ -1,13 +1,14 @@
 // import React from "react";
 
 export type State = {
-  isLoading: false;
+  isLoading: boolean;
   showAlert: boolean;
   alertText: string;
   alertType: string;
-  user: string | null;
+  user: object;
   token: string | null;
   userLocation: string;
+  jobLocation: string; // ?
 };
 
 // const initialCounterState: State = {
@@ -17,15 +18,15 @@ export type State = {
 export enum ActionKind {
   ShowAlert,
   ClearAlert,
+  ShowLoading,
   // ShowAlert = "SHOW_ALERT",
-  RegisterUserBegin,
-  RegisterUserSuccess,
-  RegisterUserError,
+  LoginUser,
 }
 
 type Action = {
   type: ActionKind;
-  payload?: { [name: string]: number | string }; // generic object
+  // payload?: { [name: string]: string }; // generic object
+  payload: Record<string, any>; // any ??
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -36,8 +37,8 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         showAlert: true,
-        alertText: "Please provide all values",
-        alertType: "danger",
+        alertText: payload.text,
+        alertType: payload.type,
       };
 
     case ActionKind.ClearAlert:
@@ -48,11 +49,25 @@ const reducer = (state: State, action: Action): State => {
         alertType: "",
       };
 
-    case ActionKind.RegisterUserBegin:
-      return state;
+    // TO BE DELETED ??
+    case ActionKind.ShowLoading:
+      return {
+        ...state,
+        isLoading: payload.visible === "true" ? true : false,
+      };
+
+    case ActionKind.LoginUser:
+      const { user, token, location } = payload;
+      return {
+        ...state,
+        user,
+        token,
+        userLocation: location,
+        jobLocation: location,
+      };
 
     default:
-      throw new Error(`no such action : ${action.type}`);
+      throw new Error(`no such dispatch action : ${action.type}`);
   }
 };
 

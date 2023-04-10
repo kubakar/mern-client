@@ -2,21 +2,39 @@ import React, { useContext, createContext, useReducer } from "react";
 import reducer from "./reducer";
 import { State, ActionKind } from "./reducer";
 
+// get values from local storage
+const token = localStorage.getItem("token");
+const user = localStorage.getItem("user");
+const location = localStorage.getItem("location");
+
+export interface UserResponse {
+  token?: string;
+  user: {
+    name: string;
+    email: string;
+    location: string;
+    lastName?: string;
+  };
+}
+
 const initialState: State = {
   isLoading: false,
   showAlert: false,
   alertText: "",
   alertType: "",
-  user: null,
-  token: null,
-  userLocation: "",
+  user: user ? JSON.parse(user) : null,
+  token: token,
+  userLocation: location ?? "",
+  jobLocation: location ?? "",
 };
 
 type StateMethods = {
-  displayAlert: () => void;
-  clearAlert: () => void;
+  displayAlert: (text: string, type?: string) => void;
+  showLoading: (visible: boolean) => void;
+  loginUser: (user: UserResponse) => void;
+  // test: () => void;
   // https://www.typescriptlang.org/docs/handbook/utility-types.html
-  registerUser: (user: Record<string, string>) => void;
+  // registerUser: (user: Record<string, string>) => void;
 };
 
 const AppContext = createContext<(State & StateMethods) | undefined>(undefined);
@@ -31,24 +49,46 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
 
   const ctxClearAlert = () => {
     setTimeout(() => {
-      disptach({ type: ActionKind.ClearAlert });
+      disptach({ type: ActionKind.ClearAlert, payload: {} });
     }, 2000);
   };
 
-  const stateMethods: StateMethods = {
-    clearAlert() {
-      setTimeout(() => {
-        disptach({ type: ActionKind.ClearAlert });
-      }, 2000);
-    },
+  const ctxRemoveUserToLocalStorage = (items: string[]) => {
+    items.forEach((item) => localStorage.removeItem(item));
 
-    displayAlert() {
-      disptach({ type: ActionKind.ShowAlert });
+    // localStorage.removeItem("user");
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("location");
+  };
+
+  const stateMethods: StateMethods = {
+    displayAlert(text, type) {
+      disptach({
+        type: ActionKind.ShowAlert,
+        payload: { text, type: type ?? "danger" },
+      });
       ctxClearAlert();
     },
 
-    async registerUser(user) {
-      console.log(user);
+    showLoading(onOff) {
+      disptach({
+        type: ActionKind.ShowLoading,
+        payload: { visible: onOff.toString() },
+      });
+      ctxClearAlert();
+    },
+
+    async loginUser(currentUser) {
+      const { user, token } = currentUser;
+
+      disptach({
+        type: ActionKind.LoginUser,
+        payload: { user, token, location: user.location },
+      });
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("location", user.location);
+      localStorage.setItem("token", token!);
     },
   };
 

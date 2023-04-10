@@ -7,13 +7,15 @@ import Error from "./pages/Error";
 import Dashboad from "./pages/Dashboad";
 import { useAppContext } from "./context/appContext";
 import AlertGlobal from "./components/AlertGlobal";
+import Loading from "./components/Loading";
 
 const App: React.FC<{}> = (props) => {
-  const { showAlert } = useAppContext();
+  const { showAlert, isLoading } = useAppContext();
 
   return (
     <React.Fragment>
       {showAlert && <AlertGlobal />}
+      {/* {isLoading && <Loading />} */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboad />} />
