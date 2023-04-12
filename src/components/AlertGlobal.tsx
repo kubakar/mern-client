@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   transform: translate(-50%, 0);
   width: 90vw;
   top: 1rem;
+  z-index: 10;
 `;
 
 type Props = {};

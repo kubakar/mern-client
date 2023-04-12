@@ -1,4 +1,9 @@
-import React, { useContext, createContext, useReducer } from "react";
+import React, {
+  useContext,
+  createContext,
+  useReducer,
+  useCallback,
+} from "react";
 import reducer from "./reducer";
 import { State, ActionKind } from "./reducer";
 
@@ -62,23 +67,23 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
   };
 
   const stateMethods: StateMethods = {
-    displayAlert(text, type) {
+    displayAlert: useCallback((text, type) => {
       disptach({
         type: ActionKind.ShowAlert,
         payload: { text, type: type ?? "danger" },
       });
       ctxClearAlert();
-    },
+    }, []),
 
-    showLoading(onOff) {
+    showLoading: useCallback((onOff) => {
       disptach({
         type: ActionKind.ShowLoading,
         payload: { visible: onOff.toString() },
       });
       ctxClearAlert();
-    },
+    }, []),
 
-    async loginUser(currentUser) {
+    loginUser: useCallback((currentUser) => {
       const { user, token } = currentUser;
 
       disptach({
@@ -89,7 +94,7 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("location", user.location);
       localStorage.setItem("token", token!);
-    },
+    }, []),
   };
 
   return (

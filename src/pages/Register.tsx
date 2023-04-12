@@ -7,7 +7,7 @@ import FormRow from "../components/FormRow";
 import Logo from "../components/Logo";
 import { useAppContext } from "../context/appContext";
 import { useApi } from "../utils/hooks";
-import Loading from "../components/Loading";
+import LoadingLocal from "../components/LoadingLocal";
 import { UserResponse } from "../context/appContext";
 
 const Wrapper = styled.section`
@@ -22,6 +22,8 @@ const Wrapper = styled.section`
   }
   .form {
     border-top: 5px solid var(--primary-500);
+    /* spinner relation */
+    position: relative;
   }
   .btn {
     margin-top: 1rem;
@@ -85,7 +87,7 @@ const Register: React.FC<Props> = () => {
       }
     }
     if (apiError) displayAlert(apiError.data.msg);
-  }, [apiData, apiError]);
+  }, [apiData, apiError, displayAlert, loginUser]);
   // display & showLoading => useCallback?
 
   // redirect to other page if user is seeded to context ()
@@ -129,15 +131,10 @@ const Register: React.FC<Props> = () => {
 
   return (
     <Wrapper className="full-page">
-      {apiLoading && <Loading />}
+      <form onSubmit={onSubmit} action="" className="form">
+        {/* absolute spinner relative to form box */}
+        {apiLoading && <LoadingLocal />}
 
-      <form
-        onSubmit={onSubmit}
-        action=""
-        className="form"
-        // style={{ position: "relative" }} OVERLAY TEST
-      >
-        {/* <div>A</div> */}
         <Logo />
         <h3>{getActionNames(isMember)[0]}</h3>
         {[
