@@ -1,4 +1,3 @@
-// import { useEffect } from "react";
 import { FaBeer } from "react-icons/fa";
 
 type Props = {};

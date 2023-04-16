@@ -1,11 +1,18 @@
 // import React from "react";
 
+export type User = {
+  name: string;
+  email: string;
+  location: string;
+  lastName?: string;
+};
+
 export type State = {
   isLoading: boolean;
   showAlert: boolean;
   alertText: string;
   alertType: string;
-  user: object;
+  user: User | null;
   token: string | null;
   userLocation: string;
   jobLocation: string; // ?
@@ -21,6 +28,7 @@ export enum ActionKind {
   ShowLoading,
   // ShowAlert = "SHOW_ALERT",
   LoginUser,
+  LogoutUser,
 }
 
 type Action = {
@@ -64,6 +72,18 @@ const reducer = (state: State, action: Action): State => {
         token,
         userLocation: location,
         jobLocation: location,
+      };
+
+    case ActionKind.LogoutUser:
+      return {
+        isLoading: false,
+        showAlert: false,
+        alertText: "",
+        alertType: "",
+        user: null,
+        token: null,
+        userLocation: "",
+        jobLocation: "",
       };
 
     default:

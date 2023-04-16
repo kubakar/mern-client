@@ -1,20 +1,27 @@
 import styled from "styled-components";
-import { FaHome } from "react-icons/fa";
+import { FaAlignLeft, FaUserCircle, FaCaretDown } from "react-icons/fa";
+import Logo from "./Logo";
+import { useAppContext } from "../context/appContext";
+import { useState } from "react";
 
 const Wrapper = styled.nav`
   height: var(--nav-height);
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   box-shadow: 0 1px 0px 0px rgba(0, 0, 0, 0.1);
+  background: var(--white);
+
   .logo {
-    display: flex;
-    align-items: center;
+    /* display: flex;
+    align-items: center; */
+    display: block;
     width: 100px;
   }
   .nav-center {
     display: flex;
-    width: 90vw;
+    /* width: 90vw; */
+    width: 90%;
     align-items: center;
     justify-content: space-between;
   }
@@ -27,7 +34,6 @@ const Wrapper = styled.nav`
     display: flex;
     align-items: center;
   }
-  background: var(--white);
   .btn-container {
     position: relative;
   }
@@ -71,9 +77,9 @@ const Wrapper = styled.nav`
     position: sticky;
     top: 0;
 
-    .nav-center {
+    /* .nav-center {
       width: 90%;
-    }
+    } */
     .logo {
       display: none;
     }
@@ -86,10 +92,45 @@ const Wrapper = styled.nav`
 type Props = {};
 
 const NavBar: React.FC<Props> = (props) => {
+  const [showLogout, setShowLogout] = useState<boolean>(false);
+  const { user, logoutUser } = useAppContext();
+
   return (
     <Wrapper>
-      <h4>NavBar</h4>
-      <FaHome />
+      <div className="nav-center">
+        <button
+          type="button"
+          className="toggle-btn"
+          onClick={() => {
+            console.log("toggle");
+          }}
+        >
+          <FaAlignLeft />
+        </button>
+        <div>
+          <Logo />
+          <h3 className="logo-text">Dashboard</h3>
+        </div>
+        <div className="btn-container">
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              console.log("show dropdown");
+              setShowLogout((prev) => !prev);
+            }}
+          >
+            <FaUserCircle />
+            {user?.name}
+            <FaCaretDown />
+          </button>
+          <div className={`dropdown ${showLogout && "show-dropdown"}`}>
+            <button type="button" className="dropdown-btn" onClick={logoutUser}>
+              logout
+            </button>
+          </div>
+        </div>
+      </div>
     </Wrapper>
   );
 };

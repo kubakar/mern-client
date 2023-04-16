@@ -5,7 +5,7 @@ import React, {
   useCallback,
 } from "react";
 import reducer from "./reducer";
-import { State, ActionKind } from "./reducer";
+import { State, ActionKind, User } from "./reducer";
 
 // get values from local storage
 const token = localStorage.getItem("token");
@@ -14,12 +14,7 @@ const location = localStorage.getItem("location");
 
 export interface UserResponse {
   token?: string;
-  user: {
-    name: string;
-    email: string;
-    location: string;
-    lastName?: string;
-  };
+  user: User;
 }
 
 const initialState: State = {
@@ -37,6 +32,7 @@ type StateMethods = {
   displayAlert: (text: string, type?: string) => void;
   showLoading: (visible: boolean) => void;
   loginUser: (user: UserResponse) => void;
+  logoutUser: () => void;
   // test: () => void;
   // https://www.typescriptlang.org/docs/handbook/utility-types.html
   // registerUser: (user: Record<string, string>) => void;
@@ -60,10 +56,6 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
 
   const ctxRemoveUserToLocalStorage = (items: string[]) => {
     items.forEach((item) => localStorage.removeItem(item));
-
-    // localStorage.removeItem("user");
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("location");
   };
 
   const stateMethods: StateMethods = {
@@ -95,6 +87,11 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
       localStorage.setItem("location", user.location);
       localStorage.setItem("token", token!);
     }, []),
+
+    logoutUser() {
+      disptach({ type: ActionKind.LoginUser, payload: {} });
+      ctxRemoveUserToLocalStorage(["user", "location", "token"]);
+    },
   };
 
   return (
