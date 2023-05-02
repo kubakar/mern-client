@@ -1,15 +1,7 @@
-import { FaBeer } from "react-icons/fa";
-
 type Props = {};
 
 const Stats: React.FC<Props> = () => {
-  return (
-    <div>
-      Stats
-      <hr />
-      <FaBeer />
-    </div>
-  );
+  return <h4>Stats</h4>;
 };
 
 export default Stats;

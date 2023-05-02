@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { FaAlignLeft, FaUserCircle, FaCaretDown } from "react-icons/fa";
+// import { FaAlignLeft, FaUserCircle, FaCaretDown } from "react-icons/fa";
+import { AlignLeft, User } from "react-feather";
 import Logo from "./Logo";
 import { useAppContext } from "../context/appContext";
 import { useState } from "react";
@@ -28,11 +29,11 @@ const Wrapper = styled.nav`
   .toggle-btn {
     background: transparent;
     border-color: transparent;
-    font-size: 1.75rem;
+    /* font-size: 1.75rem; */
     color: var(--primary-500);
     cursor: pointer;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
   }
   .btn-container {
     position: relative;
@@ -89,23 +90,17 @@ const Wrapper = styled.nav`
   }
 `;
 
-type Props = {};
+type Props = { onChange: VoidFunction };
 
-const NavBar: React.FC<Props> = (props) => {
+const NavBar: React.FC<Props> = ({ onChange }) => {
   const [showLogout, setShowLogout] = useState<boolean>(false);
   const { user, logoutUser } = useAppContext();
 
   return (
     <Wrapper>
       <div className="nav-center">
-        <button
-          type="button"
-          className="toggle-btn"
-          onClick={() => {
-            console.log("toggle");
-          }}
-        >
-          <FaAlignLeft />
+        <button type="button" className="toggle-btn" onClick={onChange}>
+          <AlignLeft size={32} />
         </button>
         <div>
           <Logo />
@@ -120,9 +115,8 @@ const NavBar: React.FC<Props> = (props) => {
               setShowLogout((prev) => !prev);
             }}
           >
-            <FaUserCircle />
+            <User />
             {user?.name}
-            <FaCaretDown />
           </button>
           <div className={`dropdown ${showLogout && "show-dropdown"}`}>
             <button type="button" className="dropdown-btn" onClick={logoutUser}>

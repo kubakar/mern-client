@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import reducer from "./reducer";
 import { State, ActionKind, User } from "./reducer";
+import axios, { AxiosInstance } from "axios";
 
 // get values from local storage
 const token = localStorage.getItem("token");
@@ -31,14 +32,22 @@ const initialState: State = {
 type StateMethods = {
   displayAlert: (text: string, type?: string) => void;
   showLoading: (visible: boolean) => void;
-  loginUser: (user: UserResponse) => void;
+  loginUser: (user: UserResponse) => void; // also used to update user
+
   logoutUser: () => void;
-  // test: () => void;
+  // updateUser: (user: UserResponse) => void; // TBD
+
   // https://www.typescriptlang.org/docs/handbook/utility-types.html
   // registerUser: (user: Record<string, string>) => void;
 };
 
-const AppContext = createContext<(State & StateMethods) | undefined>(undefined);
+type StateUtils = {
+  axiosWithToken: AxiosInstance;
+};
+
+const AppContext = createContext<
+  (State & StateMethods & StateUtils) | undefined
+>(undefined);
 
 type AppProviderProps = {
   children: React.ReactNode;
@@ -48,6 +57,24 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
   // reducer
   const [state, disptach] = useReducer(reducer, initialState);
 
+  // axios setup
+  const axiosWithToken = axios.create({
+    headers: { Authorization: `Bearer ${state.token}` },
+  });
+
+  // handle these call with interceptors
+  axiosWithToken.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response.status === 401) {
+        console.log("!! AUTH ERROR !!");
+        stateMethods.logoutUser();
+      }
+      return Promise.reject(error);
+    }
+  );
+  // =================
+
   const ctxClearAlert = () => {
     setTimeout(() => {
       disptach({ type: ActionKind.ClearAlert, payload: {} });
@@ -56,6 +83,10 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
 
   const ctxRemoveUserToLocalStorage = (items: string[]) => {
     items.forEach((item) => localStorage.removeItem(item));
+  };
+
+  const stateUtils: StateUtils = {
+    axiosWithToken,
   };
 
   const stateMethods: StateMethods = {
@@ -75,6 +106,7 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
       ctxClearAlert();
     }, []),
 
+    // also used to update user
     loginUser: useCallback((currentUser) => {
       const { user, token } = currentUser;
 
@@ -88,14 +120,16 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
       localStorage.setItem("token", token!);
     }, []),
 
+    // updateUser: useCallback((currentUser) => {}, []),
+
     logoutUser() {
-      disptach({ type: ActionKind.LoginUser, payload: {} });
+      disptach({ type: ActionKind.LogoutUser, payload: {} });
       ctxRemoveUserToLocalStorage(["user", "location", "token"]);
     },
   };
 
   return (
-    <AppContext.Provider value={{ ...state, ...stateMethods }}>
+    <AppContext.Provider value={{ ...state, ...stateMethods, ...stateUtils }}>
       {props.children}
     </AppContext.Provider>
   );
