@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import styled from "styled-components";
 import FormRow from "../../components/FormRow";
@@ -14,7 +13,7 @@ const Wrapper = styled.section`
     max-width: 100%; // overrides !
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
+    align-items: end;
     column-gap: 1rem;
 
     border-top: 5px solid var(--primary-500);
@@ -46,7 +45,8 @@ const initialState: formType = {
 const Register: React.FC<Props> = () => {
   const [formValues, setFormValues] = useState<formType>(initialState);
 
-  const { user, displayAlert, loginUser, axiosWithToken } = useAppContext();
+  const { user, displayAlert, loginUpdateUser, axiosWithToken } =
+    useAppContext();
 
   useEffect(() => {
     if (user) {
@@ -84,11 +84,11 @@ const Register: React.FC<Props> = () => {
     if (apiData?.token) {
       console.log(apiData);
       displayAlert("User Updated!", "success");
-      loginUser(apiData); // proceed with global state changed (token received)
+      loginUpdateUser(apiData); // proceed with global state changed (token received)
       // update ctx (works same as login)
     }
     if (apiError) displayAlert(apiError.data.msg);
-  }, [apiData, apiError, displayAlert, loginUser]);
+  }, [apiData, apiError, displayAlert, loginUpdateUser]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +112,7 @@ const Register: React.FC<Props> = () => {
           { name: "name", type: "text" },
           { name: "email", type: "email" },
           { name: "lastName", type: "text" },
-          { name: "location", type: "location" },
+          { name: "location", type: "text" },
         ].map(({ name, type }) => {
           return (
             <FormRow

@@ -54,11 +54,7 @@ const Register: React.FC<Props> = () => {
 
   // global state and useNavigate
   const navigate = useNavigate();
-  const { user, displayAlert, loginUser } = useAppContext();
-
-  // const registerApi = async (currentUser: formType) =>
-  //   axios.post("/api/auth/register", currentUser);
-  // // axios.get("/api/auth/getUsers");
+  const { user, displayAlert, loginUpdateUser } = useAppContext();
 
   const setupUser = async (currentUser: formType, login: boolean) => {
     const path = login ? "login" : "register";
@@ -70,16 +66,12 @@ const Register: React.FC<Props> = () => {
     true
   );
 
-  // useEffect(() => {
-  //   showLoading(apiLoading);
-  // }, [apiLoading]);
-
   useEffect(() => {
     if (apiData) {
       if (apiData.token) {
         console.log("TOKEN !!");
         displayAlert("User Logged In! Redirecting...", "success");
-        loginUser(apiData); // proceed with global state changed (token received)
+        loginUpdateUser(apiData); // proceed with global state changed (token received)
       } else {
         console.log("NO ... TOKEN !!");
         displayAlert("User Created!", "success");
@@ -87,7 +79,7 @@ const Register: React.FC<Props> = () => {
       }
     }
     if (apiError) displayAlert(apiError.data.msg);
-  }, [apiData, apiError, displayAlert, loginUser]);
+  }, [apiData, apiError, displayAlert, loginUpdateUser]);
   // display & showLoading => useCallback?
 
   // redirect to other page if user is seeded to context ()
