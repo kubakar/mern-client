@@ -16,6 +16,9 @@ const Wrapper = styled.aside`
     width: 250px;
     margin-left: -250px;
     transition: var(--transition);
+
+    position: sticky;
+    top: 0;
   }
   .content {
     /* ?? */

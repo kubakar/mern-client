@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
 import { useApi } from "../utils/hooks";
 import LoadingLocal from "./LoadingLocal";
 import { jobType } from "../utils/types";
 import Job from "../components/Job";
+import EditJob from "./EditJob";
 
 const Wrapper = styled.section`
   /* spinner relation */
@@ -39,7 +40,7 @@ type jobsType = {
 
 type Props = {};
 
-const renderJobs = (data: jobsType) => {
+const renderJobs = (data: jobsType, callback: Function) => {
   const { count, jobs } = data;
 
   if (!jobs) return "No";
@@ -49,7 +50,7 @@ const renderJobs = (data: jobsType) => {
       <h5>{`${count} job${count && "s"} found`}</h5>
       <hr />
       {jobs.map((job) => (
-        <Job job={job} key={job._id} />
+        <Job job={job} key={job._id} onEdit={callback} />
       ))}
     </div>
   ) : (
@@ -59,6 +60,16 @@ const renderJobs = (data: jobsType) => {
 
 const JobContainer: React.FC<Props> = () => {
   const { displayAlert, axiosWithToken } = useAppContext();
+
+  const [sideBarVisible, showSideBar] = useState<boolean>(false);
+  const [selectedJob, setSelectedJob] = useState<jobType>();
+
+  const toggleSideBar = useCallback(() => showSideBar((prev) => !prev), []);
+
+  const openModal = useCallback((job: jobType) => {
+    showSideBar(true);
+    setSelectedJob(job);
+  }, []);
 
   const getJobs = async () => axiosWithToken.get(`/api/job`); // custom axios instance
 
@@ -78,8 +89,14 @@ const JobContainer: React.FC<Props> = () => {
 
   return (
     <Wrapper>
+      <EditJob
+        visible={sideBarVisible}
+        onChange={toggleSideBar}
+        initValues={selectedJob}
+      />
+
       {apiLoading && <LoadingLocal clear />}
-      {apiData && renderJobs(apiData)}
+      {apiData && renderJobs(apiData, openModal)}
     </Wrapper>
   );
 };

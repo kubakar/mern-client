@@ -50,14 +50,7 @@ const Register: React.FC<Props> = () => {
     useAppContext();
 
   useEffect(() => {
-    if (user) {
-      setFormValues({
-        name: user.name,
-        email: user.email,
-        lastName: user.lastName,
-        location: user.location,
-      });
-    }
+    if (user) setFormValues(user);
   }, [user]); // populate form with user ctx at initial render
 
   // other methods

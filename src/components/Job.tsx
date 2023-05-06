@@ -4,7 +4,6 @@ import { jobType } from "../utils/types";
 import moment from "moment";
 import JobInfo from "./JobInfo";
 import { Navigation, Briefcase, Calendar, Info } from "react-feather";
-import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   background: var(--white);
@@ -74,11 +73,14 @@ const Wrapper = styled.div`
 
 type Props = {
   job: jobType;
+  onEdit: Function;
 };
 
-const Job: React.FC<Props> = ({ job }) => {
+const Job: React.FC<Props> = ({ job, onEdit }) => {
   const handleEdit = (id: string) => {
     console.log("EDIT " + id);
+
+    onEdit(job); // pass selected job data
   };
 
   const handleDelete = (id: string) => {
@@ -104,16 +106,16 @@ const Job: React.FC<Props> = ({ job }) => {
           <JobInfo icon={<Info />} text={job.type} />
         </div>
         <div className="pane-buttons">
-          {/* <button className="btn edit-btn" onClick={() => handleEdit(job._id!)}>
+          <button className="btn edit-btn" onClick={() => handleEdit(job._id!)}>
             Edit
-          </button> */}
-          <Link
+          </button>
+          {/* <Link
             className="btn edit-btn"
             to="/add-job"
             onClick={() => handleEdit(job._id!)}
           >
             Edit
-          </Link>
+          </Link> */}
           <button
             className="btn delete-btn"
             onClick={() => handleDelete(job._id!)}
