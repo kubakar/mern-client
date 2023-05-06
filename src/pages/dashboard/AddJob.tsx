@@ -6,6 +6,7 @@ import FormRow from "../../components/FormRow";
 import FormSelectRow from "../../components/FormSelectRow";
 import LoadingLocal from "../../components/LoadingLocal";
 import { useApi } from "../../utils/hooks";
+import { jobType as formType } from "../../utils/types";
 
 const Wrapper = styled.section`
   .form {
@@ -35,14 +36,6 @@ const Wrapper = styled.section`
 `;
 
 type Props = {};
-
-type formType = {
-  position: string;
-  company: string;
-  location: string;
-  status: string;
-  type: string;
-};
 
 const statusOptions = ["interview", "declined", "pending"];
 const typeOptions = ["full-time", "part-time", "remote", "internship"];
@@ -122,7 +115,9 @@ const AddJob: React.FC<Props> = () => {
               key={`key-${name}`}
               name={name}
               type={type}
-              value={formValues[name as keyof formType]}
+              value={
+                formValues[name as keyof Omit<formType, "_id" | "createdAt">]
+              }
               handleChange={handleChange}
             />
           );

@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 
 import styled from "styled-components";
 import FormRow from "../../components/FormRow";
-import { UserResponse, useAppContext } from "../../context/appContext";
+import { useAppContext } from "../../context/appContext";
 import { useApi } from "../../utils/hooks";
 import LoadingLocal from "../../components/LoadingLocal";
 // import Wrapper from "../../assets/wrappers/DashboardFormPage.js";
+import { UserResponse } from "../../utils/types";
 
 const Wrapper = styled.section`
   .form {

@@ -8,7 +8,7 @@ import Logo from "../components/Logo";
 import { useAppContext } from "../context/appContext";
 import { useApi } from "../utils/hooks";
 import LoadingLocal from "../components/LoadingLocal";
-import { UserResponse } from "../context/appContext";
+import { UserResponse } from "../utils/types";
 
 const Wrapper = styled.section`
   display: flex;

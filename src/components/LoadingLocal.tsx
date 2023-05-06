@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
+type Props = {
+  clear?: boolean;
+};
+
 const Wrapper = styled.div`
   position: absolute;
   left: 0;
@@ -12,7 +16,7 @@ const Wrapper = styled.div`
   min-width: 100%;
   min-height: 100%;
 
-  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: rgba(0, 0, 0, 0.5); */
 
   display: flex;
   align-items: center;
@@ -20,13 +24,13 @@ const Wrapper = styled.div`
   text-align: center;
 `;
 
-type Props = {};
-
 // https://stackoverflow.com/questions/1776915/how-can-i-center-an-absolutely-positioned-element-in-a-div?page=1&tab=scoredesc#tab-top
 
-const AlertGlobal: React.FC<Props> = () => {
+const AlertGlobal: React.FC<Props> = ({ clear }) => {
   return (
-    <Wrapper>
+    <Wrapper
+      style={{ ...(!clear && { backgroundColor: "rgba(0, 0, 0, 0.5)" }) }}
+    >
       <div className="loading"></div>
     </Wrapper>
   );

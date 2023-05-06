@@ -1,11 +1,6 @@
 // import React from "react";
 
-export type User = {
-  name: string;
-  email: string;
-  location: string;
-  lastName: string;
-};
+import { User } from "../utils/types";
 
 export type State = {
   isLoading: boolean;
@@ -26,7 +21,6 @@ export enum ActionKind {
   ShowAlert,
   ClearAlert,
   ShowLoading,
-  // ShowAlert = "SHOW_ALERT",
   LoginUser,
   LogoutUser,
 }

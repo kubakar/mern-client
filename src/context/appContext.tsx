@@ -5,8 +5,9 @@ import React, {
   useCallback,
 } from "react";
 import reducer from "./reducer";
-import { State, ActionKind, User } from "./reducer";
+import { State, ActionKind } from "./reducer";
 import axios, { AxiosInstance } from "axios";
+import { UserResponse } from "../utils/types";
 
 const getAxiosWithToken = (token: string, logoutUserMethod: VoidFunction) => {
   // axios setup
@@ -34,11 +35,6 @@ const token = localStorage.getItem("token");
 const user = localStorage.getItem("user");
 const location = localStorage.getItem("location");
 
-export interface UserResponse {
-  token?: string;
-  user: User;
-}
-
 const initialState: State = {
   isLoading: false,
   showAlert: false,
@@ -56,8 +52,6 @@ type StateMethods = {
   loginUpdateUser: (user: UserResponse) => void; // also used to update user
 
   logoutUser: () => void;
-  // updateUser: (user: UserResponse) => void; // TBD
-
   // https://www.typescriptlang.org/docs/handbook/utility-types.html
   // registerUser: (user: Record<string, string>) => void;
 };
