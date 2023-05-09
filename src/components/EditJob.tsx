@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import { X } from "react-feather";
 import Logo from "./Logo";
-import { AddJob } from "../pages/dashboard";
-import { jobType } from "../utils/types";
-import JobAddEditForm from "./JobAddEditForm";
 
 const Wrapper = styled.aside`
   .sidebar-container {
@@ -55,13 +52,16 @@ const Wrapper = styled.aside`
   }
 `;
 
+// THIS IS JUST MODAL !!
+// REFACTOR THIS !!
+
 type Props = {
   visible: boolean;
   onChange: VoidFunction;
-  initValues?: jobType;
+  children: React.ReactNode;
 };
 
-const EditJob: React.FC<Props> = ({ visible, onChange, initValues }) => {
+const EditJob: React.FC<Props> = ({ visible, onChange, children }) => {
   return (
     <Wrapper>
       <div className={`sidebar-container ${visible && "show-sidebar"}`}>
@@ -72,8 +72,7 @@ const EditJob: React.FC<Props> = ({ visible, onChange, initValues }) => {
           <header>
             <Logo />
           </header>
-          {/* <AddJob initValues={initValues} /> */}
-          <JobAddEditForm initValues={initValues} isEditing />
+          {children}
         </div>
       </div>
     </Wrapper>

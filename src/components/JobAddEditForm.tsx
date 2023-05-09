@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
@@ -6,7 +6,7 @@ import FormRow from "./FormRow";
 import FormSelectRow from "./FormSelectRow";
 import LoadingLocal from "./LoadingLocal";
 import { useApi } from "../utils/hooks";
-import { jobType as formType } from "../utils/types";
+import { jobType } from "../utils/types";
 
 const Wrapper = styled.section`
   .form {
@@ -36,14 +36,15 @@ const Wrapper = styled.section`
 `;
 
 type Props = {
-  initValues?: formType;
+  initValues?: jobType;
   isEditing?: boolean;
+  callback?: Function;
 };
 
 const statusOptions = ["interview", "declined", "pending"];
 const typeOptions = ["full-time", "part-time", "remote", "internship"];
 
-const initialState: formType = {
+const initialState: jobType = {
   position: "",
   company: "",
   location: "",
@@ -52,8 +53,12 @@ const initialState: formType = {
   type: typeOptions[0],
 };
 
-const JobAddEditForm: React.FC<Props> = ({ initValues, isEditing }) => {
-  const [formValues, setFormValues] = useState<formType>(initialState);
+const JobAddEditForm: React.FC<Props> = ({
+  initValues,
+  isEditing,
+  callback,
+}) => {
+  const [formValues, setFormValues] = useState<jobType>(initialState);
 
   useEffect(() => {
     if (initValues) setFormValues(initValues);
@@ -71,39 +76,46 @@ const JobAddEditForm: React.FC<Props> = ({ initValues, isEditing }) => {
     setFormValues(initialState);
   };
 
-  const validateInput = (data: formType): boolean => {
+  const validateInput = (data: jobType): boolean => {
     const { position, company, location } = data;
     if (!(position && location && company)) return false;
     return true;
   };
 
-  const createJob = async (job: formType) =>
-    axiosWithToken.post(`/api/job`, job); // custom axios instance
+  type ApiCallType = (job: jobType, edit: boolean) => Promise<any>;
 
-  const [apiData, apiError, apiLoading, apiCall] = useApi(createJob);
+  const createJob: ApiCallType = async (job, edit) =>
+    edit
+      ? axiosWithToken.patch(`/api/job/${job._id}`, job)
+      : axiosWithToken.post(`/api/job`, job); // custom axios instance
+
+  const [apiData, apiError, apiLoading, apiCall] = useApi<jobType, ApiCallType>(
+    createJob,
+    true
+  );
 
   useEffect(() => {
     if (apiData) {
-      console.log(apiData);
-      displayAlert("Job added!", "success");
+      console.log(apiData.company);
+      displayAlert(isEditing ? "Job edited!" : "Job added!", "success");
+
+      !!callback && callback(); // calling GET one more time
+      // CHECK
     }
+
     if (apiError) displayAlert(apiError.data.msg);
-  }, [apiData, apiError, displayAlert]);
+  }, [apiData, apiError, displayAlert, isEditing, callback]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isEditing) {
-      console.log("Editing API TBD...");
-    } else {
-      if (!validateInput(formValues))
-        return displayAlert("Please provide all values");
+    if (!validateInput(formValues))
+      return displayAlert("Please provide all values");
 
-      apiCall(formValues);
-    }
+    apiCall(formValues, isEditing!);
   };
 
-  const getFormInputs = (dataObject: Partial<formType>) => {
+  const getFormInputs = (dataObject: Partial<jobType>) => {
     return Object.entries(dataObject)
       .filter(([, v]) => !v) // get empty strings only for standard inputs
       .map(([k]) => ({ name: k, type: "text" }));
@@ -122,7 +134,7 @@ const JobAddEditForm: React.FC<Props> = ({ initValues, isEditing }) => {
               name={name}
               type={type}
               value={
-                formValues[name as keyof Omit<formType, "_id" | "createdAt">]
+                formValues[name as keyof Omit<jobType, "_id" | "createdAt">]
               }
               handleChange={handleChange}
             />

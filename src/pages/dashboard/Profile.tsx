@@ -66,13 +66,15 @@ const Register: React.FC<Props> = () => {
     return true;
   };
 
-  const updateUser = async (currentUser: formType) =>
+  type ApiCallType = (currentUser: formType) => Promise<any>;
+
+  const updateUser: ApiCallType = async (currentUser) =>
     axiosWithToken.patch(`/api/auth/updateUser`, currentUser); // custom axios instance
 
-  const [apiData, apiError, apiLoading, apiCall] = useApi<UserResponse>(
-    updateUser,
-    true
-  );
+  const [apiData, apiError, apiLoading, apiCall] = useApi<
+    UserResponse,
+    ApiCallType
+  >(updateUser, true);
 
   useEffect(() => {
     if (apiData?.token) {
@@ -92,7 +94,6 @@ const Register: React.FC<Props> = () => {
 
     // console.log(formValues);
     apiCall(formValues);
-    // setFormValues(initialState);
   };
 
   return (

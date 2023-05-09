@@ -1,19 +1,19 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, Dispatch, SetStateAction } from "react";
 import { isAxiosError, AxiosResponse } from "axios";
 
-type AsyncFunc = (...args: any[]) => Promise<AxiosResponse>;
+type AsyncFunc = (...args: any[]) => Promise<any>;
+type VoidAsyncFunc = () => Promise<void>;
 
-// export const useApi = <T = any>(
-export const useApi = <T>(
+export const useApi = <T, U = VoidAsyncFunc>(
   apiFn: AsyncFunc,
   reset: boolean = false
 ): [
   data: T | undefined,
   error: AxiosResponse | undefined,
   loading: boolean,
-  call: Function
+  call: U | VoidAsyncFunc,
+  setter: Dispatch<SetStateAction<T | undefined>>
 ] => {
-  // const [data, setData] = useState<object>();
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AxiosResponse>();
@@ -21,17 +21,15 @@ export const useApi = <T>(
   const call = useCallback(
     async (...args: any[]) => {
       setLoading(true);
-      // TEST
+      // reset
       if (reset) {
         error && setError(undefined);
         data && setData(undefined);
       }
-      // ====
 
       try {
         const result = await apiFn(...args);
         setData(result.data);
-        // setData(result.data); ??
       } catch (error) {
         if (isAxiosError(error)) {
           console.log(error);
@@ -44,5 +42,5 @@ export const useApi = <T>(
     [apiFn, error, data, reset]
   );
 
-  return [data, error, loading, call];
+  return [data, error, loading, call, setData];
 };

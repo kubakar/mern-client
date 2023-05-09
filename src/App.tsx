@@ -13,16 +13,14 @@ import {
   SharedLayout,
   Stats,
 } from "./pages/dashboard";
-import Loading from "./components/Loading";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
 const App: React.FC<{}> = (props) => {
-  const { showAlert, isLoading } = useAppContext();
+  const { showAlert } = useAppContext();
 
   return (
     <React.Fragment>
       {showAlert && <AlertGlobal />}
-      {/* {isLoading && <Loading />} */}
       <BrowserRouter>
         <Routes>
           <Route

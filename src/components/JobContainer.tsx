@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
 import { useApi } from "../utils/hooks";
@@ -6,6 +12,7 @@ import LoadingLocal from "./LoadingLocal";
 import { jobType } from "../utils/types";
 import Job from "../components/Job";
 import EditJob from "./EditJob";
+import JobAddEditForm from "./JobAddEditForm";
 
 const Wrapper = styled.section`
   /* spinner relation */
@@ -40,7 +47,16 @@ type jobsType = {
 
 type Props = {};
 
-const renderJobs = (data: jobsType, callback: Function) => {
+type deleteFunction = (
+  id: string,
+  setter: Dispatch<SetStateAction<boolean>>
+) => Promise<any>;
+
+const renderJobs = (
+  data: jobsType,
+  editCallback: Function,
+  deleteCallback: deleteFunction
+) => {
   const { count, jobs } = data;
 
   if (!jobs) return "No";
@@ -50,7 +66,12 @@ const renderJobs = (data: jobsType, callback: Function) => {
       <h5>{`${count} job${count && "s"} found`}</h5>
       <hr />
       {jobs.map((job) => (
-        <Job job={job} key={job._id} onEdit={callback} />
+        <Job
+          job={job}
+          key={job._id}
+          onEdit={editCallback}
+          onDelete={deleteCallback}
+        />
       ))}
     </div>
   ) : (
@@ -61,19 +82,41 @@ const renderJobs = (data: jobsType, callback: Function) => {
 const JobContainer: React.FC<Props> = () => {
   const { displayAlert, axiosWithToken } = useAppContext();
 
-  const [sideBarVisible, showSideBar] = useState<boolean>(false);
+  const [modalVisible, showModal] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<jobType>();
 
-  const toggleSideBar = useCallback(() => showSideBar((prev) => !prev), []);
+  const toggleSideBar = useCallback(() => showModal((prev) => !prev), []);
 
   const openModal = useCallback((job: jobType) => {
-    showSideBar(true);
+    showModal(true);
     setSelectedJob(job);
   }, []);
 
   const getJobs = async () => axiosWithToken.get(`/api/job`); // custom axios instance
 
-  const [apiData, apiError, apiLoading, apiCall] = useApi<jobsType>(getJobs);
+  const [apiData, apiError, apiLoading, apiCall, apiDataSetter] =
+    useApi<jobsType>(getJobs);
+
+  // usage without custom hook
+  const deleteJob: deleteFunction = async (id, setter) => {
+    setter(true);
+    console.log(id);
+    axiosWithToken
+      .delete(`/api/job/${id}`)
+      .then(() => {
+        // update the UI state
+        apiDataSetter((prev) => {
+          if (!prev) return prev; // if undefined
+          const newJobs = [...prev.jobs].filter((j) => j._id !== id); // delete JOB
+          return { ...prev, jobs: newJobs };
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        displayAlert(e.response.data.msg);
+      })
+      .finally(() => setter(false));
+  };
 
   useEffect(() => {
     apiCall();
@@ -81,22 +124,27 @@ const JobContainer: React.FC<Props> = () => {
   }, []);
 
   useEffect(() => {
-    if (apiData) {
-      console.log(apiData);
-    }
     if (apiError) displayAlert(apiError.data.msg);
-  }, [apiData, apiError, displayAlert]);
+  }, [apiError, displayAlert]);
+
+  const jobsCallback = useCallback(() => {
+    showModal(false);
+    apiCall();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Wrapper>
-      <EditJob
-        visible={sideBarVisible}
-        onChange={toggleSideBar}
-        initValues={selectedJob}
-      />
+      <EditJob visible={modalVisible} onChange={toggleSideBar}>
+        <JobAddEditForm
+          initValues={selectedJob}
+          isEditing
+          callback={jobsCallback}
+        />
+      </EditJob>
 
       {apiLoading && <LoadingLocal clear />}
-      {apiData && renderJobs(apiData, openModal)}
+      {apiData && renderJobs(apiData, openModal, deleteJob)}
     </Wrapper>
   );
 };

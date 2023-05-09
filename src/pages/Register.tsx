@@ -56,12 +56,17 @@ const Register: React.FC<Props> = () => {
   const navigate = useNavigate();
   const { user, displayAlert, loginUpdateUser } = useAppContext();
 
-  const setupUser = async (currentUser: formType, login: boolean) => {
+  type ApiCallType = (currentUser: formType, login: boolean) => Promise<any>;
+
+  const setupUser: ApiCallType = async (currentUser, login) => {
     const path = login ? "login" : "register";
     return axios.post(`/api/auth/${path}`, currentUser);
   };
 
-  const [apiData, apiError, apiLoading, apiCall] = useApi<UserResponse>(
+  const [apiData, apiError, apiLoading, apiCall] = useApi<
+    UserResponse,
+    ApiCallType
+  >(
     setupUser, // setup call with GENERIC also?
     true
   );
@@ -80,7 +85,6 @@ const Register: React.FC<Props> = () => {
     }
     if (apiError) displayAlert(apiError.data.msg);
   }, [apiData, apiError, displayAlert, loginUpdateUser]);
-  // display & showLoading => useCallback?
 
   // redirect to other page if user is seeded to context ()
   useEffect(() => {

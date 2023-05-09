@@ -1,11 +1,15 @@
-import React from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import { jobType } from "../utils/types";
 import moment from "moment";
 import JobInfo from "./JobInfo";
 import { Navigation, Briefcase, Calendar, Info } from "react-feather";
+import LoadingLocal from "./LoadingLocal";
 
 const Wrapper = styled.div`
+  /* spinner relation */
+  position: relative;
+
   background: var(--white);
   border-radius: var(--borderRadius);
   /* display: grid; */
@@ -71,26 +75,38 @@ const Wrapper = styled.div`
   }
 `;
 
+type deleteFunction = (
+  id: string,
+  setter: Dispatch<SetStateAction<boolean>>
+) => Promise<any>;
+
 type Props = {
   job: jobType;
   onEdit: Function;
+  onDelete: deleteFunction;
 };
 
-const Job: React.FC<Props> = ({ job, onEdit }) => {
+const Job: React.FC<Props> = ({ job, onEdit, onDelete }) => {
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false); // optional
+
   const handleEdit = (id: string) => {
     console.log("EDIT " + id);
 
     onEdit(job); // pass selected job data
+    // onEdit((prev: any) => ({ ...prev, jobs: [] })); ??
   };
 
   const handleDelete = (id: string) => {
-    console.log("DELETE " + id);
+    // handle api here and then refresh state
+    onDelete(id, setDeleteLoading);
   };
 
   const date = moment(job.createdAt).format("MMM Do, YYYY");
 
   return (
     <Wrapper>
+      {deleteLoading && <LoadingLocal />}
+
       <div className="header">
         <div className="header-letter">{job.company.slice(0, 1)}</div>
         <div>
@@ -109,13 +125,6 @@ const Job: React.FC<Props> = ({ job, onEdit }) => {
           <button className="btn edit-btn" onClick={() => handleEdit(job._id!)}>
             Edit
           </button>
-          {/* <Link
-            className="btn edit-btn"
-            to="/add-job"
-            onClick={() => handleEdit(job._id!)}
-          >
-            Edit
-          </Link> */}
           <button
             className="btn delete-btn"
             onClick={() => handleDelete(job._id!)}
