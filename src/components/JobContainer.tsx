@@ -11,8 +11,8 @@ import { useApi } from "../utils/hooks";
 import LoadingLocal from "./LoadingLocal";
 import { jobType } from "../utils/types";
 import Job from "../components/Job";
-import EditJob from "./EditJob";
 import JobAddEditForm from "./JobAddEditForm";
+import Modal from "./Modal";
 
 const Wrapper = styled.section`
   /* spinner relation */
@@ -58,8 +58,6 @@ const renderJobs = (
   deleteCallback: deleteFunction
 ) => {
   const { count, jobs } = data;
-
-  if (!jobs) return "No";
 
   return jobs.length ? (
     <div className="jobs">
@@ -108,7 +106,7 @@ const JobContainer: React.FC<Props> = () => {
         apiDataSetter((prev) => {
           if (!prev) return prev; // if undefined
           const newJobs = [...prev.jobs].filter((j) => j._id !== id); // delete JOB
-          return { ...prev, jobs: newJobs };
+          return { ...prev, jobs: newJobs, count: prev.count - 1 }; // ??
         });
       })
       .catch((e) => {
@@ -118,13 +116,14 @@ const JobContainer: React.FC<Props> = () => {
       .finally(() => setter(false));
   };
 
+  // get jobs
   useEffect(() => {
     apiCall();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (apiError) displayAlert(apiError.data.msg);
+    if (apiError) displayAlert("Jobs cannot be fetched.");
   }, [apiError, displayAlert]);
 
   const jobsCallback = useCallback(() => {
@@ -135,14 +134,13 @@ const JobContainer: React.FC<Props> = () => {
 
   return (
     <Wrapper>
-      <EditJob visible={modalVisible} onChange={toggleSideBar}>
+      <Modal visible={modalVisible} onChange={toggleSideBar}>
         <JobAddEditForm
           initValues={selectedJob}
           isEditing
           callback={jobsCallback}
         />
-      </EditJob>
-
+      </Modal>
       {apiLoading && <LoadingLocal clear />}
       {apiData && renderJobs(apiData, openModal, deleteJob)}
     </Wrapper>

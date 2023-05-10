@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+  z-index: 10;
 `;
 
 // https://stackoverflow.com/questions/1776915/how-can-i-center-an-absolutely-positioned-element-in-a-div?page=1&tab=scoredesc#tab-top

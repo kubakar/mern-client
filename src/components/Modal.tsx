@@ -12,26 +12,23 @@ const Wrapper = styled.aside`
     align-items: center;
     z-index: -1;
     opacity: 0;
-    /* display: none; */
     transition: var(--transition);
 
     overflow: auto;
   }
   .show-sidebar {
-    /* display: flex; */
     z-index: 99;
     opacity: 1;
   }
   .content {
     background: var(--white);
-    /* width: var(--fluid-width); */
-    /* height: 95vh; // modified in relation to small sidebar */
     border-radius: var(--borderRadius);
     padding: 4rem 2rem;
     position: relative;
     display: flex;
     align-items: center;
     flex-direction: column;
+    overflow: hidden;
   }
   .close-btn {
     position: absolute;
@@ -52,16 +49,13 @@ const Wrapper = styled.aside`
   }
 `;
 
-// THIS IS JUST MODAL !!
-// REFACTOR THIS !!
-
 type Props = {
   visible: boolean;
   onChange: VoidFunction;
   children: React.ReactNode;
 };
 
-const EditJob: React.FC<Props> = ({ visible, onChange, children }) => {
+const Modal: React.FC<Props> = ({ visible, onChange, children }) => {
   return (
     <Wrapper>
       <div className={`sidebar-container ${visible && "show-sidebar"}`}>
@@ -79,4 +73,4 @@ const EditJob: React.FC<Props> = ({ visible, onChange, children }) => {
   );
 };
 
-export default EditJob;
+export default Modal;

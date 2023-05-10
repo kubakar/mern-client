@@ -2,8 +2,9 @@ import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 import NavBar from "../../components/NavBar";
-import SmallSideBar from "../../components/SmallSideBar";
 import BigSideBar from "../../components/BigSideBar";
+import NavLinks from "../../components/NavLinks";
+import Modal from "../../components/Modal";
 
 const Wrapper = styled.section`
   .dashboard {
@@ -36,6 +37,19 @@ const Wrapper = styled.section`
   }
 `;
 
+const ModalWrapper = styled.aside`
+  display: unset;
+
+  @media (min-width: 992px) {
+    display: none; // important - works with flex struct
+  }
+
+  .content {
+    width: var(--fluid-width);
+    height: 95vh;
+  }
+`;
+
 type Props = {};
 
 const SharedLayout: React.FC<Props> = () => {
@@ -47,7 +61,12 @@ const SharedLayout: React.FC<Props> = () => {
       {/* 2 column layout - sidebars are toggled when screen changes */}
       {/* 1 column - sidebar, 2 column - navbar & main page */}
       <main className="dashboard">
-        <SmallSideBar visible={sideBarVisible} onChange={toggleSideBar} />
+        <ModalWrapper>
+          <Modal visible={sideBarVisible} onChange={toggleSideBar}>
+            <NavLinks onClick={toggleSideBar} />
+          </Modal>
+        </ModalWrapper>
+
         <BigSideBar visible={sideBarVisible} />
         <div>
           <NavBar onChange={toggleSideBar} />
