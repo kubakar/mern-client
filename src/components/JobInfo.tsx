@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useAppContext } from "../context/appContext";
+import { theme } from "../context/theme";
 
 const Wrapper = styled.div`
   display: flex;
@@ -11,19 +11,6 @@ const Wrapper = styled.div`
     border-radius: var(--borderRadius);
     padding: 0.2rem 0.5rem;
   }
-
-  .pending {
-    background: #fcefc7;
-    color: #e9b949;
-  }
-  .interview {
-    background: #e0e8f9;
-    color: #647acb;
-  }
-  .declined {
-    color: #d66a6a;
-    background: #ffeeee;
-  }
 `;
 
 type Props = {
@@ -32,15 +19,23 @@ type Props = {
 };
 
 const JobInfo: React.FC<Props> = ({ icon, text }) => {
-  // const {} = useAppContext();
-
   const statusOptions = ["interview", "declined", "pending"];
   const appliedStyle = statusOptions.includes(text) ? text : null;
 
   return (
     <Wrapper>
       {icon}
-      <div className={`tag ${appliedStyle}`}>{text}</div>
+      <div
+        className={`tag`}
+        style={{
+          ...(appliedStyle && {
+            color: theme[appliedStyle as keyof typeof theme].color,
+            background: theme[appliedStyle as keyof typeof theme].background,
+          }),
+        }}
+      >
+        {text}
+      </div>
     </Wrapper>
   );
 };
