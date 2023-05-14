@@ -1,21 +1,39 @@
 import React from "react";
 import styled from "styled-components";
-import { StatsType } from "../pages/dashboard/Stats";
-import moment from "moment";
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Area,
+  AreaChart as Chart,
+} from "recharts";
+import { theme } from "../context/theme";
 
 const Wrapper = styled.div``;
 
 type Props = {
-  applications: StatsType["monthlyApplications"];
+  applications: { date: string; count: number }[];
 };
 
 const AreaChart: React.FC<Props> = ({ applications }) => {
-  const [month, year] = applications[0].date;
-
-  const date = moment({ year, month: month - 1 }).format("MMM YYYY");
-  console.log(month, year, date);
-
-  return <Wrapper>AreaChart</Wrapper>;
+  return (
+    <ResponsiveContainer height={300}>
+      {/* <Chart data={applications}> */}
+      <Chart data={applications}>
+        <CartesianGrid strokeDasharray="3"></CartesianGrid>
+        <XAxis dataKey={"date"}></XAxis>
+        <YAxis dataKey={"count"}></YAxis>
+        <Tooltip />
+        <Area
+          type="monotone"
+          dataKey={"count"}
+          fill={theme.primary.color500}
+        ></Area>
+      </Chart>
+    </ResponsiveContainer>
+  );
 };
 
 export default AreaChart;

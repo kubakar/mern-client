@@ -1,4 +1,4 @@
-export const theme = {
+export const themeJobs = {
   pending: {
     background: "#fcefc7",
     color: "#e9b949",
@@ -10,5 +10,11 @@ export const theme = {
   declined: {
     color: "#d66a6a",
     background: "#ffeeee",
+  },
+};
+
+export const theme = {
+  primary: {
+    color500: "#2cb1bc",
   },
 };

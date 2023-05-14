@@ -3,7 +3,7 @@ import styled from "styled-components";
 import StatItem from "./StatItem";
 import { StatsType } from "../pages/dashboard/Stats";
 import { LogOut, CheckSquare, Clock } from "react-feather";
-import { theme } from "../context/theme";
+import { themeJobs } from "../context/theme";
 
 const Wrapper = styled.section`
   display: grid;
@@ -27,19 +27,19 @@ const StatsContainer: React.FC<Props> = ({ stats }) => {
     {
       title: "pending applications",
       count: stats.pending,
-      status: theme.pending.color,
+      status: themeJobs.pending.color,
       icon: <Clock size={48} />,
     },
     {
       title: "interviews scheduled",
       count: stats.interview,
-      status: theme.interview.color,
+      status: themeJobs.interview.color,
       icon: <CheckSquare size={48} />,
     },
     {
       title: "jobs declined",
       count: stats.declined,
-      status: theme.declined.color,
+      status: themeJobs.declined.color,
       icon: <LogOut size={48} />,
     },
   ];

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
 import AreaChart from "./AreaChart";
 import BarChart from "./BarChart";
 import { StatsType } from "../pages/dashboard/Stats";
+import moment from "moment";
 
 // const Wrapper = styled.div`
 //   /* spinner relation */
@@ -12,18 +13,10 @@ import { StatsType } from "../pages/dashboard/Stats";
 
 const Wrapper = styled.section`
   margin-top: 4rem;
-  /* text-align: center; */
+  text-align: center;
   button {
-    background: transparent;
-    border-color: transparent;
-    text-transform: capitalize;
-    color: var(--primary-500);
     font-size: 1.25rem;
-    cursor: pointer;
-  }
-  h4 {
-    text-align: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -32,12 +25,37 @@ type Props = {
 };
 
 const ChartsContainer: React.FC<Props> = ({ applications }) => {
-  const {} = useAppContext();
+  const [chartVisible, setChartVisible] = useState(false);
+
+  const [month, year] = applications[0].date;
+
+  const date = moment({ year, month: month - 1 }).format("MMM YYYY");
+  console.log(month, year, date);
+
+  const formattedapplications = applications
+    .map((a) => {
+      const [month, year] = a.date;
+      return {
+        ...a,
+        date: moment({ year, month: month - 1 }).format("MMM YYYY"),
+      };
+    })
+    .slice(0, 6);
 
   return (
     <Wrapper>
-      <AreaChart applications={applications} />
-      {/* <BarChart applications={applications} /> */}
+      <button
+        type="button"
+        onClick={() => setChartVisible((prev) => !prev)}
+        className="btn-link button"
+      >
+        {chartVisible ? "Area" : "Bar"}
+      </button>
+      {chartVisible ? (
+        <AreaChart applications={formattedapplications} />
+      ) : (
+        <BarChart applications={formattedapplications} />
+      )}
     </Wrapper>
   );
 };

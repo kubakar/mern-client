@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { theme } from "../context/theme";
+import { themeJobs } from "../context/theme";
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,8 +29,9 @@ const JobInfo: React.FC<Props> = ({ icon, text }) => {
         className={`tag`}
         style={{
           ...(appliedStyle && {
-            color: theme[appliedStyle as keyof typeof theme].color,
-            background: theme[appliedStyle as keyof typeof theme].background,
+            color: themeJobs[appliedStyle as keyof typeof themeJobs].color,
+            background:
+              themeJobs[appliedStyle as keyof typeof themeJobs].background,
           }),
         }}
       >
