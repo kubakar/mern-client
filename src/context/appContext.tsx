@@ -44,6 +44,15 @@ const initialState: State = {
   token: token,
   userLocation: location ?? "",
   jobLocation: location ?? "",
+  // new field
+  jobFilterOptions: {
+    search: null,
+    type: "",
+    sort: "",
+    status: "",
+    limit: null,
+    page: null,
+  },
 };
 
 type StateMethods = {
@@ -52,6 +61,7 @@ type StateMethods = {
   loginUpdateUser: (user: UserResponse) => void; // also used to update user
 
   logoutUser: () => void;
+  updatejobFilterOptions: (jobFilterOptions: Object) => void;
   // https://www.typescriptlang.org/docs/handbook/utility-types.html
   // registerUser: (user: Record<string, string>) => void;
 };
@@ -119,6 +129,10 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
       disptach({ type: ActionKind.LogoutUser, payload: {} });
       ctxRemoveUserToLocalStorage(["user", "location", "token"]);
     },
+    // new method
+    updatejobFilterOptions: useCallback((filters) => {
+      disptach({ type: ActionKind.UpdateJobFilter, payload: filters });
+    }, []),
   };
 
   // axios instance with token

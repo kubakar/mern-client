@@ -60,6 +60,13 @@ const JobAddEditForm: React.FC<Props> = ({
 }) => {
   const [formValues, setFormValues] = useState<jobType>(initialState);
 
+  console.log("JobAddEditForm"); // TEST
+
+  useEffect(() => {
+    console.log("JobAddEditForm START");
+    return () => console.log("JobAddEditForm STOP");
+  }, []); // this comp. starts when "All Jobs" page is mounted and dies when page is changed therefore `useEffect` below is neeeded
+
   useEffect(() => {
     if (initValues) setFormValues(initValues);
   }, [initValues]); // populate form with user ctx at initial render
@@ -98,13 +105,15 @@ const JobAddEditForm: React.FC<Props> = ({
     if (apiData) {
       console.log(apiData.company);
       displayAlert(isEditing ? "Job edited!" : "Job added!", "success");
-
       !!callback && callback(); // calling GET one more time
       // CHECK
     }
 
     if (apiError) displayAlert(apiError.data.msg);
-  }, [apiData, apiError, displayAlert, isEditing, callback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiData, apiError, displayAlert, isEditing]);
+  // callback is excluded so it's not fired when filters are changed
+  // }, [apiData, apiError, displayAlert, isEditing, callback]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

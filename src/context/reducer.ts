@@ -2,6 +2,15 @@
 
 import { User } from "../utils/types";
 
+export type filterSortType = {
+  search: string | null;
+  status: string;
+  type: string;
+  sort: string;
+  page: number | null;
+  limit: number | null;
+};
+
 export type State = {
   isLoading: boolean;
   showAlert: boolean;
@@ -11,6 +20,7 @@ export type State = {
   token: string | null;
   userLocation: string;
   jobLocation: string; // ?
+  jobFilterOptions: filterSortType;
 };
 
 // const initialCounterState: State = {
@@ -23,6 +33,7 @@ export enum ActionKind {
   ShowLoading,
   LoginUser,
   LogoutUser,
+  UpdateJobFilter,
 }
 
 type Action = {
@@ -78,6 +89,24 @@ const reducer = (state: State, action: Action): State => {
         token: null,
         userLocation: "",
         jobLocation: "",
+        jobFilterOptions: {
+          search: null,
+          type: "",
+          sort: "",
+          status: "",
+          limit: null,
+          page: null,
+        },
+      };
+
+    case ActionKind.UpdateJobFilter:
+      const { search, type, status, sort, page, limit } = payload;
+
+      console.log("UpdateJobFilter...");
+
+      return {
+        ...state,
+        jobFilterOptions: { search, type, status, sort, page, limit },
       };
 
     default:
