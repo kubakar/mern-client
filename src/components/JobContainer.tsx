@@ -185,6 +185,8 @@ const JobContainer: React.FC<Props> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, type, status, sort, page]);
 
+  console.log("Jobs");
+
   return (
     <Wrapper>
       {modalVisible && ( // this will not be re-rendered now
@@ -201,7 +203,6 @@ const JobContainer: React.FC<Props> = () => {
       {apiData && apiData.pages > 1 && (
         <PageBtnContainer
           pages={apiData.pages}
-          count={apiData.count}
           onPageChange={
             (newPage: number) =>
               updatejobFilterOptions({ ...jobFilterOptions, page: newPage })
