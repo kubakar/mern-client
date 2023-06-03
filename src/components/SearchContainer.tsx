@@ -72,10 +72,9 @@ const SearchContainer: React.FC<Props> = () => {
 
     return () => {
       // !!
-      console.log("CLEAR updatejobFilterOptions");
+      // console.log("CLEAR updatejobFilterOptions");
       // This will clear out the 'page' to null therefore it's working as it should resetting the page to default (null)
-
-      updatejobFilterOptions(initialState); // clear ctx data so next comp render is clean with initial data
+      // updatejobFilterOptions(initialState); // clear ctx data so next comp render is clean with initial data
       // updatejobFilterOptions({ ...formValues, page: null }); // clear page only when filter values are persistent
     };
   }, [updatejobFilterOptions, formValues]);

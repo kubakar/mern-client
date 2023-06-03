@@ -26,10 +26,9 @@ type Props = {
 const ChartsContainer: React.FC<Props> = ({ applications }) => {
   const [chartVisible, setChartVisible] = useState(false);
 
-  const [month, year] = applications[0].date;
-
-  const date = moment({ year, month: month - 1 }).format("MMM YYYY");
-  console.log(month, year, date);
+  // const [month, year] = applications[0].date;
+  // const date = moment({ year, month: month - 1 }).format("MMM YYYY");
+  // console.log(month, year, date);
 
   const formattedapplications = applications
     .map((a) => {

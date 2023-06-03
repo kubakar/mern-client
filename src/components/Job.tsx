@@ -75,10 +75,10 @@ const Wrapper = styled.div`
   }
 `;
 
-type deleteFunction = (
+export type deleteFunction = (
   id: string,
   setter: Dispatch<SetStateAction<boolean>>
-) => Promise<any>;
+) => void;
 
 type Props = {
   job: jobType;

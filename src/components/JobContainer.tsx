@@ -1,18 +1,11 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
 import { filterSortType } from "../context/jobReducer";
 import { useApi } from "../utils/hooks";
 import LoadingLocal from "./LoadingLocal";
 import { jobType } from "../utils/types";
-import Job from "../components/Job";
+import Job, { deleteFunction } from "../components/Job";
 import JobAddEditForm from "./JobAddEditForm";
 import Modal from "./Modal";
 import { debounce } from "../utils/misc";
@@ -52,11 +45,6 @@ type jobsType = {
 };
 
 type Props = {};
-
-type deleteFunction = (
-  id: string,
-  setter: Dispatch<SetStateAction<boolean>>
-) => Promise<any>;
 
 const renderJobs = (
   data: jobsType,
@@ -134,7 +122,7 @@ const JobContainer: React.FC<Props> = () => {
   >(getJobs);
 
   // usage without custom hook
-  const deleteJob: deleteFunction = async (id, setter) => {
+  const deleteJob: deleteFunction = (id, setter) => {
     setter(true);
     console.log(id);
     axiosWithToken
