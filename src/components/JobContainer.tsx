@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
-import { filterSortType } from "../context/reducer";
+import { filterSortType } from "../context/jobReducer";
 import { useApi } from "../utils/hooks";
 import LoadingLocal from "./LoadingLocal";
 import { jobType } from "../utils/types";
@@ -17,6 +17,7 @@ import JobAddEditForm from "./JobAddEditForm";
 import Modal from "./Modal";
 import { debounce } from "../utils/misc";
 import PageBtnContainer from "./PageBtnContainer";
+import { useJobContext } from "../context/jobContext";
 
 const Wrapper = styled.section`
   /* spinner relation */
@@ -83,12 +84,9 @@ const renderJobs = (
 };
 
 const JobContainer: React.FC<Props> = () => {
-  const {
-    displayAlert,
-    axiosWithToken,
-    jobFilterOptions,
-    updatejobFilterOptions,
-  } = useAppContext();
+  const { displayAlert, axiosWithToken } = useAppContext();
+
+  const { jobFilterOptions, updatejobFilterOptions } = useJobContext();
 
   const [modalVisible, showModal] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<jobType>();

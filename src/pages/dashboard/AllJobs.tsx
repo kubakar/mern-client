@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SearchContainer from "../../components/SearchContainer";
 import JobContainer from "../../components/JobContainer";
+import { JobContextProvider } from "../../context/jobContext";
 
 const Wrapper = styled.section``;
 
@@ -10,8 +11,10 @@ const AllJobs: React.FC<Props> = () => {
   return (
     <Wrapper>
       <h1>All Jobs</h1>
-      <SearchContainer />
-      <JobContainer />
+      <JobContextProvider>
+        <SearchContainer />
+        <JobContainer />
+      </JobContextProvider>
     </Wrapper>
   );
 };

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 import styled from "styled-components";
-import { useAppContext } from "../context/appContext";
 import FormRow from "./FormRow";
 import FormSelectRow from "./FormSelectRow";
 
-import { filterSortType } from "../context/reducer";
+import { filterSortType } from "../context/jobReducer";
+import { useJobContext } from "../context/jobContext";
 
 const Wrapper = styled.section`
   .form {
@@ -50,7 +50,7 @@ const initialState: filterSortType = {
 };
 
 const SearchContainer: React.FC<Props> = () => {
-  const { updatejobFilterOptions } = useAppContext();
+  const { updatejobFilterOptions } = useJobContext();
   const [formValues, setFormValues] = useState<filterSortType>(initialState);
 
   // const [formValues, setFormValues] =

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useAppContext } from "../context/appContext";
+import { useJobContext } from "../context/jobContext";
 
 const Wrapper = styled.div``;
 
@@ -62,7 +62,7 @@ type Props = {
 };
 
 const PageBtnContainer: React.FC<Props> = ({ pages, count, onPageChange }) => {
-  const { jobFilterOptions } = useAppContext();
+  const { jobFilterOptions } = useJobContext();
 
   const currentPage = jobFilterOptions.page ?? 1;
 

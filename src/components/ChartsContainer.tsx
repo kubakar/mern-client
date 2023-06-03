@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useAppContext } from "../context/appContext";
 import AreaChart from "./AreaChart";
 import BarChart from "./BarChart";
 import { StatsType } from "../pages/dashboard/Stats";
