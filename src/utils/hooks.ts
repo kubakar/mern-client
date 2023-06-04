@@ -4,6 +4,19 @@ import { isAxiosError, AxiosResponse } from "axios";
 type AsyncFunc = (...args: any[]) => Promise<any>;
 type VoidAsyncFunc = () => Promise<void>;
 
+const waiting = async (ms = 1000) => {
+  const wait = new Promise((resolve) =>
+    setTimeout(
+      () =>
+        resolve({
+          data: `waited ${ms}`,
+        }),
+      ms
+    )
+  );
+  return wait;
+}; // TESTING
+
 export const useApi = <T, U = VoidAsyncFunc>(
   apiFn: AsyncFunc,
   reset: boolean = false
@@ -20,6 +33,7 @@ export const useApi = <T, U = VoidAsyncFunc>(
 
   const call = useCallback(
     async (...args: any[]) => {
+      // await waiting(1000);
       setLoading(true);
       // reset
       if (reset) {
@@ -28,6 +42,7 @@ export const useApi = <T, U = VoidAsyncFunc>(
       }
 
       try {
+        await waiting(500);
         const result = await apiFn(...args);
         setData(result.data);
       } catch (error) {

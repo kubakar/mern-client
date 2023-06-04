@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useJobContext } from "../context/jobContext";
 
 // const Wrapper = styled.div``;
 
@@ -57,14 +56,17 @@ const Wrapper = styled.section`
 `;
 
 type Props = {
+  apiPage: number | null;
   pages: number;
   onPageChange: (newPage: number) => void;
 };
 
-const PageBtnContainer: React.FC<Props> = ({ pages, onPageChange }) => {
-  const { jobFilterOptions } = useJobContext();
-
-  const currentPage = jobFilterOptions.page ?? 1;
+const PageBtnContainer: React.FC<Props> = ({
+  pages,
+  onPageChange,
+  apiPage,
+}) => {
+  const currentPage = apiPage ?? 1;
 
   // const [currentPage, setCurrentPage] = useState(jobFilterOptions.page ?? 1);
   const changePage = (next: boolean) => {

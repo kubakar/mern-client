@@ -4,8 +4,7 @@ import styled from "styled-components";
 import FormRow from "./FormRow";
 import FormSelectRow from "./FormSelectRow";
 
-import { filterSortType } from "../context/jobReducer";
-import { useJobContext } from "../context/jobContext";
+import { filterSortType, initialState } from "../pages/dashboard/AllJobs";
 
 const Wrapper = styled.section`
   .form {
@@ -34,50 +33,25 @@ const Wrapper = styled.section`
   }
 `;
 
-type Props = {};
+type Props = {
+  setFormValues: Function;
+  formValues: filterSortType;
+};
 
 const statusOptions = ["all", "interview", "declined", "pending"];
 const typeOptions = ["all", "full-time", "part-time", "remote", "internship"];
 const sortOptions = ["latest", "oldest", "a - z", "z - a"];
 
-const initialState: filterSortType = {
-  search: null, // set to null because of excluding initial render execution (debounce check)
-  sort: sortOptions[0],
-  status: statusOptions[0],
-  type: typeOptions[0],
-  page: null,
-  limit: null,
-};
-
-const SearchContainer: React.FC<Props> = () => {
-  const { updatejobFilterOptions } = useJobContext();
-  const [formValues, setFormValues] = useState<filterSortType>(initialState);
-
-  // const [formValues, setFormValues] =
-  //   useState<filterSortType>(jobFilterOptions); // do not clear filters - read from ctx on init
-
+const SearchContainer: React.FC<Props> = ({ setFormValues, formValues }) => {
   // other methods
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
+    setFormValues((prev: any) => ({ ...prev, page: null, [name]: value })); // TEST
   };
 
   const handleClear = () => {
     setFormValues(initialState);
   };
-
-  // send filter data to context so other comp. (JobsContainer) can use it (re-render)
-  useEffect(() => {
-    updatejobFilterOptions(formValues);
-
-    return () => {
-      // !!
-      // console.log("CLEAR updatejobFilterOptions");
-      // This will clear out the 'page' to null therefore it's working as it should resetting the page to default (null)
-      // updatejobFilterOptions(initialState); // clear ctx data so next comp render is clean with initial data
-      // updatejobFilterOptions({ ...formValues, page: null }); // clear page only when filter values are persistent
-    };
-  }, [updatejobFilterOptions, formValues]);
 
   return (
     <Wrapper>
