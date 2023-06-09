@@ -33,7 +33,6 @@ export const useApi = <T, U = VoidAsyncFunc>(
 
   const call = useCallback(
     async (...args: any[]) => {
-      // await waiting(1000);
       setLoading(true);
       // reset
       if (reset) {
@@ -42,7 +41,7 @@ export const useApi = <T, U = VoidAsyncFunc>(
       }
 
       try {
-        await waiting(500);
+        await waiting(1000); // TEST
         const result = await apiFn(...args);
         setData(result.data);
       } catch (error) {

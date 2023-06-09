@@ -103,10 +103,9 @@ const JobAddEditForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (apiData) {
-      console.log(apiData.company);
+      console.log(apiData);
       displayAlert(isEditing ? "Job edited!" : "Job added!", "success");
-      !!callback && callback(); // calling GET one more time
-      // CHECK
+      !!callback && callback(apiData); // calling GET one more time
     }
 
     if (apiError) displayAlert(apiError.data.msg);

@@ -80,9 +80,11 @@ export type deleteFunction = (
   setter: Dispatch<SetStateAction<boolean>>
 ) => void;
 
+export type editFunction = (job: jobType) => void;
+
 type Props = {
   job: jobType;
-  onEdit: Function;
+  onEdit: editFunction;
   onDelete: deleteFunction;
 };
 
@@ -93,7 +95,6 @@ const Job: React.FC<Props> = ({ job, onEdit, onDelete }) => {
     console.log("EDIT " + id);
 
     onEdit(job); // pass selected job data
-    // onEdit((prev: any) => ({ ...prev, jobs: [] })); ??
   };
 
   const handleDelete = (id: string) => {

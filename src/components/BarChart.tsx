@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import {
   XAxis,
   YAxis,
@@ -9,9 +8,7 @@ import {
   Bar,
   BarChart as Chart,
 } from "recharts";
-import { theme, themeJobs } from "../context/theme";
-
-const Wrapper = styled.div``;
+import { theme } from "../context/theme";
 
 type Props = {
   applications: { date: string; count: number }[];

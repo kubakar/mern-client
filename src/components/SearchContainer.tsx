@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
-
 import styled from "styled-components";
 import FormRow from "./FormRow";
 import FormSelectRow from "./FormSelectRow";
 
-import { filterSortType, initialState } from "../pages/dashboard/AllJobs";
+import { filterSortType } from "../pages/dashboard/AllJobs";
+import {
+  initialState,
+  sortOptions,
+  statusOptions,
+  typeOptions,
+} from "../pages/dashboard/SearchAndPaginationWrapper";
+import { Dispatch, SetStateAction } from "react";
 
 const Wrapper = styled.section`
   .form {
@@ -34,19 +39,15 @@ const Wrapper = styled.section`
 `;
 
 type Props = {
-  setFormValues: Function;
   formValues: filterSortType;
+  setFormValues: Dispatch<SetStateAction<filterSortType>>;
 };
-
-const statusOptions = ["all", "interview", "declined", "pending"];
-const typeOptions = ["all", "full-time", "part-time", "remote", "internship"];
-const sortOptions = ["latest", "oldest", "a - z", "z - a"];
 
 const SearchContainer: React.FC<Props> = ({ setFormValues, formValues }) => {
   // other methods
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormValues((prev: any) => ({ ...prev, page: null, [name]: value })); // TEST
+    setFormValues((prev) => ({ ...prev, page: null, [name]: value })); // TEST
   };
 
   const handleClear = () => {

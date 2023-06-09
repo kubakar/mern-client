@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import {
   XAxis,
   YAxis,
@@ -10,8 +9,6 @@ import {
   AreaChart as Chart,
 } from "recharts";
 import { theme } from "../context/theme";
-
-const Wrapper = styled.div``;
 
 type Props = {
   applications: { date: string; count: number }[];

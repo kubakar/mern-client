@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 import styled from "styled-components";
 import { useAppContext } from "../context/appContext";
 import { jobType } from "../utils/types";
-import Job, { deleteFunction } from "../components/Job";
+import Job, { deleteFunction, editFunction } from "../components/Job";
 import JobAddEditForm from "./JobAddEditForm";
 import Modal from "./Modal";
 import { jobsType } from "../pages/dashboard/AllJobs";
@@ -34,14 +34,13 @@ const Wrapper = styled.section`
 `;
 
 type Props = {
-  apiCall: (anotherCallback: Function) => void;
-  apiDataSetter: Function;
+  apiDataSetter: Dispatch<SetStateAction<jobsType | undefined>>;
   apiData: jobsType;
 };
 
 const renderJobs = (
   data: jobsType,
-  editCallback: Function,
+  editCallback: editFunction,
   deleteCallback: deleteFunction
 ) => {
   const { count, jobs } = data;
@@ -64,7 +63,7 @@ const renderJobs = (
   );
 };
 
-const JobContainer: React.FC<Props> = ({ apiCall, apiDataSetter, apiData }) => {
+const JobContainer: React.FC<Props> = ({ apiDataSetter, apiData }) => {
   const { displayAlert, axiosWithToken } = useAppContext();
 
   const [modalVisible, showModal] = useState<boolean>(false);
@@ -86,7 +85,7 @@ const JobContainer: React.FC<Props> = ({ apiCall, apiDataSetter, apiData }) => {
       .delete(`/api/job/${id}`)
       .then(() => {
         // update the UI state
-        apiDataSetter((prev: any) => {
+        apiDataSetter((prev) => {
           if (!prev) return prev; // if undefined
           const newJobs = [...prev.jobs].filter((j) => j._id !== id); // delete JOB
           return { ...prev, jobs: newJobs, count: prev.count - 1 }; // ??
@@ -99,6 +98,19 @@ const JobContainer: React.FC<Props> = ({ apiCall, apiDataSetter, apiData }) => {
       .finally(() => setter(false));
   };
 
+  const editJob: editFunction = (updatedJob) => {
+    showModal(false);
+
+    // update the UI state
+    apiDataSetter((prev) => {
+      if (!prev) return prev; // if undefined
+      const newJobs = [...prev.jobs].map((j) =>
+        j._id !== updatedJob._id ? j : updatedJob
+      ); // delete JOB
+      return { ...prev, jobs: newJobs }; // ??
+    });
+  };
+
   console.log("Jobs");
 
   return (
@@ -108,14 +120,18 @@ const JobContainer: React.FC<Props> = ({ apiCall, apiDataSetter, apiData }) => {
           <JobAddEditForm
             initValues={selectedJob}
             isEditing
-            callback={() => apiCall(() => showModal(false))}
+            callback={(newJob: jobType) => {
+              editJob(newJob);
+
+              // THIS WILL STAY EVEN IF FILTER IS CHANGED !!
+            }}
           />
         </Modal>
       )}
 
-      {/* {apiData && renderJobs(apiData, openModal, deleteJob)} */}
       {renderJobs(apiData, openModal, deleteJob)}
     </Wrapper>
   );
 };
 export default JobContainer;
+// export default React.memo(JobContainer);

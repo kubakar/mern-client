@@ -15,8 +15,6 @@ export type StatsType = {
 const Stats: React.FC<Props> = () => {
   const { displayAlert, axiosWithToken } = useAppContext();
 
-  const getStats = async () => axiosWithToken.get(`/api/job/stats`); // custom axios instance
-
   const [apiData, apiError, apiLoading, apiCall] = useApi<StatsType>(async () =>
     axiosWithToken.get(`/api/job/stats`)
   );
@@ -47,6 +45,7 @@ const Stats: React.FC<Props> = () => {
   };
 
   return (
+    // <section style={{ position: "relative" }}> // not the case in that page
     <>
       {apiLoading && <LoadingLocal clear />}
       {renderContent(apiData)}
