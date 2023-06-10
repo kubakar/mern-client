@@ -46,8 +46,7 @@ const initialState: formType = {
 const Register: React.FC<Props> = () => {
   const [formValues, setFormValues] = useState<formType>(initialState);
 
-  const { user, displayAlert, loginUpdateUser, axiosWithToken } =
-    useAppContext();
+  const { user, displayAlert, loginUpdateUser, apiAxios } = useAppContext();
 
   useEffect(() => {
     if (user) setFormValues(user);
@@ -69,7 +68,7 @@ const Register: React.FC<Props> = () => {
   type ApiCallType = (currentUser: formType) => Promise<any>;
 
   const updateUser: ApiCallType = async (currentUser) =>
-    axiosWithToken.patch(`/api/auth/updateUser`, currentUser); // custom axios instance
+    apiAxios.patch(`/auth/updateUser`, currentUser); // custom axios instance
 
   const [apiData, apiError, apiLoading, apiCall] = useApi<
     UserResponse,
@@ -77,7 +76,7 @@ const Register: React.FC<Props> = () => {
   >(updateUser, true);
 
   useEffect(() => {
-    if (apiData?.token) {
+    if (apiData?.tokenSent) {
       console.log(apiData);
       displayAlert("User Updated!", "success");
       loginUpdateUser(apiData); // proceed with global state changed (token received)

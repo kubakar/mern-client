@@ -60,7 +60,7 @@ const Register: React.FC<Props> = () => {
 
   const setupUser: ApiCallType = async (currentUser, login) => {
     const path = login ? "login" : "register";
-    return axios.post(`/api/auth/${path}`, currentUser);
+    return axios.post(`api/auth/${path}`, currentUser);
   };
 
   const [apiData, apiError, apiLoading, apiCall] = useApi<
@@ -73,12 +73,11 @@ const Register: React.FC<Props> = () => {
 
   useEffect(() => {
     if (apiData) {
-      if (apiData.token) {
-        console.log("TOKEN !!");
+      if (apiData.tokenSent) {
+        // !
         displayAlert("User Logged In! Redirecting...", "success");
         loginUpdateUser(apiData); // proceed with global state changed (token received)
       } else {
-        console.log("NO ... TOKEN !!");
         displayAlert("User Created!", "success");
         setIsMember(true); // go to 'Login' form
       }

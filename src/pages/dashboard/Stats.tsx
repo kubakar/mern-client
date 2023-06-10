@@ -13,10 +13,10 @@ export type StatsType = {
 };
 
 const Stats: React.FC<Props> = () => {
-  const { displayAlert, axiosWithToken } = useAppContext();
+  const { displayAlert, apiAxios } = useAppContext();
 
   const [apiData, apiError, apiLoading, apiCall] = useApi<StatsType>(async () =>
-    axiosWithToken.get(`/api/job/stats`)
+    apiAxios.get(`/job/stats`)
   );
 
   // get jobs

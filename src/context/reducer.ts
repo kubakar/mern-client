@@ -8,7 +8,6 @@ export type State = {
   alertText: string;
   alertType: string;
   user: User | null;
-  token: string | null;
   userLocation: string;
   jobLocation: string; // ?
 };
@@ -51,11 +50,10 @@ const reducer = (state: State, action: Action): State => {
       };
 
     case ActionKind.LoginUser:
-      const { user, token, location } = payload;
+      const { user, location } = payload;
       return {
         ...state,
         user,
-        token,
         userLocation: location,
         jobLocation: location,
       };
@@ -67,7 +65,6 @@ const reducer = (state: State, action: Action): State => {
         alertText: "",
         alertType: "",
         user: null,
-        token: null,
         userLocation: "",
         jobLocation: "",
       };

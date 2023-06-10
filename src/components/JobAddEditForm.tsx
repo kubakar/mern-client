@@ -71,7 +71,7 @@ const JobAddEditForm: React.FC<Props> = ({
     if (initValues) setFormValues(initValues);
   }, [initValues]); // populate form with user ctx at initial render
 
-  const { displayAlert, axiosWithToken } = useAppContext();
+  const { displayAlert, apiAxios } = useAppContext();
 
   // other methods
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,9 +92,7 @@ const JobAddEditForm: React.FC<Props> = ({
   type ApiCallType = (job: jobType, edit: boolean) => Promise<any>;
 
   const createJob: ApiCallType = async (job, edit) =>
-    edit
-      ? axiosWithToken.patch(`/api/job/${job._id}`, job)
-      : axiosWithToken.post(`/api/job`, job); // custom axios instance
+    edit ? apiAxios.patch(`job/${job._id}`, job) : apiAxios.post(`job`, job); // custom axios instance
 
   const [apiData, apiError, apiLoading, apiCall] = useApi<jobType, ApiCallType>(
     createJob,

@@ -3,7 +3,8 @@ import styled from "styled-components";
 
 import main from "../assets/images/main.svg";
 import Logo from "../components/Logo";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAppContext } from "../context/appContext";
 
 const Wrapper = styled.main`
   nav {
@@ -53,6 +54,14 @@ const Wrapper = styled.main`
 type Props = {};
 
 const Landing: React.FC<Props> = () => {
+  const { user } = useAppContext();
+
+  // if user (is logged) => go to main page
+  if (user) {
+    console.log("User is already logged!");
+    return <Navigate to="/" />;
+  }
+
   return (
     <Wrapper>
       <nav>

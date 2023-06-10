@@ -9,14 +9,15 @@ import { State, ActionKind } from "./reducer";
 import axios, { AxiosInstance } from "axios";
 import { UserResponse } from "../utils/types";
 
-const getAxiosWithToken = (token: string, logoutUserMethod: VoidFunction) => {
-  // axios setup
-  const axiosWithToken = axios.create({
-    headers: { Authorization: `Bearer ${token}` },
+const getApiAxios = (logoutUserMethod: VoidFunction) => {
+  // axios instance setup
+  const apiAxios = axios.create({
+    baseURL: "api/",
+    // headers: { Authorization: `Bearer ${token}` }, // token is now in the cookie
   });
 
   // handle these call with interceptors
-  axiosWithToken.interceptors.response.use(
+  apiAxios.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error.response.status === 401) {
@@ -27,11 +28,11 @@ const getAxiosWithToken = (token: string, logoutUserMethod: VoidFunction) => {
     }
   );
 
-  return axiosWithToken;
+  return apiAxios;
 };
 
 // get values from local storage
-const token = localStorage.getItem("token");
+// token is no longer necessary (is stored in the cookie)
 const user = localStorage.getItem("user");
 const location = localStorage.getItem("location");
 
@@ -41,7 +42,6 @@ const initialState: State = {
   alertText: "",
   alertType: "",
   user: user ? JSON.parse(user) : null,
-  token: token,
   userLocation: location ?? "",
   jobLocation: location ?? "",
 };
@@ -56,7 +56,7 @@ type StateMethods = {
 };
 
 type StateUtils = {
-  axiosWithToken: AxiosInstance;
+  apiAxios: AxiosInstance;
 };
 
 const AppContext = createContext<
@@ -92,33 +92,39 @@ export const AppContextProvider: React.FC<AppProviderProps> = (props) => {
 
     // also used to update user
     loginUpdateUser: useCallback((currentUser) => {
-      const { user, token } = currentUser;
+      const { user } = currentUser;
+
+      console.log(document.cookie); // not visible since cookie is 'httpOnly'
 
       disptach({
         type: ActionKind.LoginUser,
-        payload: { user, token, location: user.location },
+        payload: { user, location: user.location },
       });
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("location", user.location);
-      localStorage.setItem("token", token!);
+      // token no longer set
     }, []),
 
-    // updateUser: useCallback((currentUser) => {}, []),
-
     logoutUser() {
-      disptach({ type: ActionKind.LogoutUser, payload: {} });
-      ctxRemoveUserToLocalStorage(["user", "location", "token"]);
+      // call server to return/set expired cookie
+      apiAxios
+        .get("auth/logout")
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((e) => console.log(e))
+        .finally(() => {
+          disptach({ type: ActionKind.LogoutUser, payload: {} });
+          ctxRemoveUserToLocalStorage(["user", "location"]);
+        });
     },
   };
 
   // axios instance with token
-  const axiosWithToken = getAxiosWithToken(
-    state.token || "",
-    stateMethods.logoutUser
-  );
+  const apiAxios = getApiAxios(stateMethods.logoutUser);
   const stateUtils: StateUtils = {
-    axiosWithToken,
+    apiAxios,
   };
 
   return (

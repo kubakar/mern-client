@@ -32,10 +32,10 @@ type ApiCallType = (
 type Props = {};
 
 const AllJobs: React.FC<Props> = () => {
-  const { axiosWithToken, displayAlert } = useAppContext();
+  const { apiAxios, displayAlert } = useAppContext();
 
   const getJobs: ApiCallType = async (search, type, status, sort, page) =>
-    axiosWithToken.get(`/api/job`, {
+    apiAxios.get(`/job`, {
       params: {
         ...(search && { search }),
         ...(type && type !== "all" && { type }),

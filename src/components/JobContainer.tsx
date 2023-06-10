@@ -64,7 +64,7 @@ const renderJobs = (
 };
 
 const JobContainer: React.FC<Props> = ({ apiDataSetter, apiData }) => {
-  const { displayAlert, axiosWithToken } = useAppContext();
+  const { displayAlert, apiAxios } = useAppContext();
 
   const [modalVisible, showModal] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<jobType>();
@@ -81,8 +81,8 @@ const JobContainer: React.FC<Props> = ({ apiDataSetter, apiData }) => {
   const deleteJob: deleteFunction = (id, setter) => {
     setter(true);
     console.log(id);
-    axiosWithToken
-      .delete(`/api/job/${id}`)
+    apiAxios
+      .delete(`/job/${id}`)
       .then(() => {
         // update the UI state
         apiDataSetter((prev) => {

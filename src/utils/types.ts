@@ -17,6 +17,7 @@ export type User = {
 };
 
 export interface UserResponse {
-  token?: string;
+  // token?: string; // no longer used
+  tokenSent?: boolean;
   user: User;
 }
